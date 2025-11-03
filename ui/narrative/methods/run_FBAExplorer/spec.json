@@ -69,7 +69,7 @@
   "behavior": {
     "service-mapping": {
       "url": "",
-      "name": "FBAExplorer",
+      "name": "TestingTools",
       "method": "run_FBAExplorer",
       "input_mapping": [
         {
