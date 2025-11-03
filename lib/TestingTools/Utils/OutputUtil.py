@@ -1,0 +1,124 @@
+import logging
+import os
+import uuid
+
+# This class is responsible for constructing objects that will be used in output files and reports.
+class OutputUtil:
+  def __init__(self, config):
+    self.config = config
+    self.callback_url = os.environ['SDK_CALLBACK_URL']
+    self.ws_url = config["workspace-url"]
+    self.shared_folder = config['scratch']
+    logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
+                        level=logging.INFO)
+  
+  # This method creates a JSON object that contains the parameters and outputs of each FBA run.
+  def createOutputJson(self, tasks, kbparallel_result):
+    result = {}
+
+    param_names = list(tasks[0]['parameters'].keys())
+    param_names = [item for item in param_names if item != "workspace"]
+
+    for i in range(0, len(tasks)):
+      t = tasks[i]
+      p = t['parameters']
+
+      key = f'Run {i}'
+
+      # Get information from the fba result
+      r = kbparallel_result['results'][i]['final_job_state']['result'][0]
+      objective = r['objective']
+      new_fba_ref = r['new_fba_ref']
+
+      obj = {}
+      for param in param_names:
+        obj[param] = str(p[param])
+      obj['objective_value'] = str(objective)
+      obj['result_ref'] = new_fba_ref
+    
+      result[key] = obj
+    return result
+    
+  # This method creates the data to populate a StringDataTable file.
+  def createTableData(self, output_json):
+    rows = list(output_json.keys())
+    cols = list(output_json[rows[0]].keys())
+
+    table_data = {
+      'row_ids': rows,
+      'row_labels': rows,
+      'column_ids': cols,
+      'column_labels': cols,
+      'row_groups_ids': [],
+      'column_groups_ids': [],
+      'data': []
+    }
+
+    for r in rows:
+      table_data['data'].append(list(output_json[r].values()))
+
+    return table_data
+  
+  def createFlippedAttributeMappingData(self, output_json):
+    rows = list(output_json.keys())
+    cols = list(output_json[rows[0]].keys())
+    instances = {}
+    for c in cols:
+      instances[c] = [output_json[key][c] for key in output_json]
+    mapping_data = {
+      'attributes': [
+        {'attribute': row, 
+         'source': 'upload', 
+         'unit': output_json[row]['objective_value'], 
+        } for row in rows],
+      'instances': instances,
+      'ontology_mapping_method': 'User curation'
+    }
+    return mapping_data
+  
+  def createAttributeMappingData(self, output_json):
+    rows = list(output_json.keys())
+    cols = list(output_json[rows[0]].keys())
+    instances = {}
+    for key in output_json:
+      instances[key] = [output_json[key][param] for param in output_json[key]]
+    mapping_data = {
+      'attributes': [{'attribute': param, 'source': 'upload', 'unit': ''} for param in cols],
+      'instances': instances,
+      'ontology_mapping_method': 'User curation'
+    }
+    return mapping_data
+  
+  # This method creates a stringified HTML table using the given json object.
+  # This table can be appended to the app summary that is displayed to the user.
+  def createSummary(self, output_json):
+    rows = list(output_json.keys())
+    cols = list(output_json[rows[0]].keys())
+
+    # Top row: column names
+    summary = "<table>"
+    summary += "<tr>"
+    for h in cols:
+      summary += f'<th style="padding: 5px">{h}</th>'
+    summary += "</tr>"
+
+    # Add each row to the table
+    for i in range(0, len(rows)):
+      row = rows[i]
+
+      # Open new row
+      summary += "<tr style=\"border-top: 1px solid #505050;\">"
+
+      # Define the style of each column
+      bg = "#f4f4f4" if i % 2 == 1 else "transparent"
+      style = f'style="padding: 5px; background-color: {bg};"'
+
+      # Add the value for each column
+      for col in output_json[row]:
+        summary += f'<td {style}">{output_json[row][col]}</td>'
+
+      # Close row
+      summary += "</tr>"
+
+    summary += "</table>"
+    return summary
