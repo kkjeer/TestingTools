@@ -60,7 +60,7 @@ This module runs the run_flux_balance_analysis tool one or more times for differ
         #BEGIN run_FBAExplorer
 
         # Print statements to stdout/stderr are captured and available as the App log
-        logging.info('Starting run_FBAExplorer function. Params=' + pformat(params))
+        logging.info('Starting run_FBAExplorer function (in FBAExplorerImpl.py). Params=' + pformat(params))
 
         # Build a Report and return
         reportObj = {

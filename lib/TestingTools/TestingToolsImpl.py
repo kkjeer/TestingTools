@@ -151,6 +151,7 @@ This sample module contains one small method that filters contigs.
 
     def run_FBAExplorer(self, ctx, params):
         """
+        This example function accepts any number of parameters and returns results in a KBaseReport
         :param params: instance of mapping from String to unspecified object
         :returns: instance of type "ReportResults" -> structure: parameter
            "report_name" of String, parameter "report_ref" of String
@@ -158,6 +159,25 @@ This sample module contains one small method that filters contigs.
         # ctx is the context object
         # return variables are: output
         #BEGIN run_FBAExplorer
+
+        # Print statements to stdout/stderr are captured and available as the App log
+        logging.info('Starting run_FBAExplorer function (in TestingToolsImply.py). Params=' + pformat(params))
+
+        # Build a report and return
+        reportObj = {
+            'objects_created': [],
+            'text_message': 'Finished running FBA Explorer'
+        }
+        report = KBaseReport(self.callback_url)
+        report_info = report.create({'report': reportObj, 'workspace_name': params['workspace_name']})
+
+
+        # Construct the output to send back
+        output = {'report_name': report_info['name'],
+                  'report_ref': report_info['ref']
+                  }
+        logging.info('returning:' + pformat(output))
+                
         #END run_FBAExplorer
 
         # At some point might do deeper type checking...
