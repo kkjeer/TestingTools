@@ -7,6 +7,8 @@ from pprint import pformat
 
 from Bio import SeqIO
 
+from Utils.AppExplorerUtil import AppExplorerUtil
+
 from installed_clients.AssemblyUtilClient import AssemblyUtil
 from installed_clients.KBaseReportClient import KBaseReport
 #END_HEADER
@@ -161,12 +163,25 @@ This sample module contains one small method that filters contigs.
         #BEGIN run_FBAExplorer
 
         # Print statements to stdout/stderr are captured and available as the App log
-        logging.info('Starting run_FBAExplorer function (in TestingToolsImply.py). Params=' + pformat(params))
+        logging.info('Starting run_FBAExplorer function. Params=' + pformat(params))
+        
+        # Create utilities
+        app_explorer_util = AppExplorerUtil(self.config)
+        
+        # Run the FBA app instances using KBParallel
+        tasks = app_explorer_util.createFBATasks(params)
+        kbparallel_result = app_explorer_util.runKBParallel(tasks)
+        logging.info(f'FBAExplorer: KBParallel result: {kbparallel_result}')
+        fba_refs = app_explorer_util.getFBARefs(kbparallel_result)
+        
+        # Set of objects created during this app run (will be linked to in the report at the end)
+        # To start, this includes a link for each FBA output created during the KBParallel run
+        objects_created = [{'ref': fba_refs[i], 'description': f'results of running fba configuration {i}'} for i in range(0, len(fba_refs))]
 
         # Build a report and return
         reportObj = {
-            'objects_created': [],
-            'text_message': 'Finished running FBA Explorer'
+          'objects_created': objects_created,
+          'text_message': 'Finished running FBA Explorer'
         }
         report = KBaseReport(self.callback_url)
         report_info = report.create({'report': reportObj, 'workspace_name': params['workspace_name']})
