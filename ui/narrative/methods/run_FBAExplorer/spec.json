@@ -1,7 +1,7 @@
 {
   "ver": "0.0.1",
   "authors": ["kkjeer"],
-  "contact": "https://kbase.us/contact-us/",
+  "contact": "",
   "categories": ["active"],
   "widgets": {
     "input": null,
@@ -9,37 +9,68 @@
   },
   "parameters": [
     {
-      "id": "assembly_input_ref",
-      "optional": false,
-      "advanced": false,
-      "allow_multiple": false,
-      "default_values": [""],
-      "field_type": "text",
       "text_options": {
-        "valid_ws_types": [
-          "KBaseGenomeAnnotations.Assembly",
-          "KBaseGenomes.ContigSet"
-        ]
+        "valid_ws_types": ["KBaseFBA.FBAModel"]
+      },
+      "advanced": false,
+      "default_values": [""],
+      "id": "fbamodel_id",
+      "optional": false,
+      "allow_multiple": false,
+      "field_type": "text"
+    },
+    {
+      "text_options": {
+        "valid_ws_types": ["KBaseBiochem.Media", "KBaseBiochem.MediaSet"]
+      },
+      "advanced": false,
+      "default_values": [""],
+      "id": "media_id",
+      "optional": true,
+      "allow_multiple": false,
+      "field_type": "text"
+    },
+    {
+      "default_values": ["0.5"],
+      "id": "activation_coefficient",
+      "advanced": true,
+      "field_type": "text",
+      "allow_multiple": false,
+      "optional": false,
+      "text_options": {
+        "validate_as": "float"
       }
     },
     {
-      "id": "min_length",
-      "optional": false,
-      "advanced": false,
-      "allow_multiple": false,
-      "default_values": [""],
-      "field_type": "text",
+      "default_values": ["0"],
+      "advanced": true,
+      "checkbox_options": {
+        "unchecked_value": 0,
+        "checked_value": 1
+      },
       "text_options": {
-        "validate_as": "int",
-        "min_integer": 0
-      }
+        "valid_ws_types": []
+      },
+      "allow_multiple": false,
+      "optional": false,
+      "field_type": "checkbox",
+      "id": "detailed_logs"
+    }
+  ],
+  "parameter-groups": [
+    {
+      "id": "param_group",
+      "parameters": ["fbamodel_id", "media_id", "activation_coefficient"],
+      "optional": false,
+      "allow_multiple": true,
+      "with_border": true
     }
   ],
   "behavior": {
     "service-mapping": {
       "url": "",
-      "name": "TestingTools",
-      "method": "run_TestingTools",
+      "name": "FBAExplorer",
+      "method": "run_FBAExplorer",
       "input_mapping": [
         {
           "narrative_system_variable": "workspace",
@@ -50,13 +81,12 @@
           "target_property": "workspace_id"
         },
         {
-          "input_parameter": "assembly_input_ref",
-          "target_property": "assembly_input_ref",
-          "target_type_transform": "resolved-ref"
+          "input_parameter": "param_group",
+          "target_property": "param_group"
         },
         {
-          "input_parameter": "min_length",
-          "target_property": "min_length"
+          "input_parameter": "detailed_logs",
+          "target_property": "detailed_logs"
         }
       ],
       "output_mapping": [
@@ -67,10 +97,6 @@
         {
           "service_method_output_path": [0, "report_ref"],
           "target_property": "report_ref"
-        },
-        {
-          "narrative_system_variable": "workspace",
-          "target_property": "workspace_name"
         }
       ]
     }
