@@ -10,6 +10,7 @@ from Bio import SeqIO
 from Utils.AppExplorerUtil import AppExplorerUtil
 from Utils.FBAExplorerUtil import FBAExplorerUtil
 from Utils.OutputUtil import OutputUtil
+from Utils.FileUtil import FileUtil
 
 from installed_clients.AssemblyUtilClient import AssemblyUtil
 from installed_clients.KBaseReportClient import KBaseReport
@@ -172,6 +173,7 @@ This sample module contains one small method that filters contigs.
         app_explorer_util = AppExplorerUtil(self.config)
         fba_explorer_util = FBAExplorerUtil(self.config)
         output_util = OutputUtil(self.config)
+        file_util = FileUtil(self.config)
         
         # Run the FBA app instances using KBParallel
         tasks = fba_explorer_util.createFBATasks(params)
@@ -184,17 +186,23 @@ This sample module contains one small method that filters contigs.
         # To start, this includes a link for each FBA output created during the KBParallel run
         objects_created = [{'ref': fba_refs[i], 'description': f'results of running fba configuration {i}'} for i in range(0, len(fba_refs))]
         
+        # Write the output json to an AttributeMapping file
         mapping_data = output_util.createFlippedAttributeMappingData(output_json)
-        logging.info(f'mapping data: {mapping_data}')
+        logging.info(f'FBAExplorer: attribute mapping data: {mapping_data}')
+        output_file = file_util.writeAttributeMappingFile(ctx, params, mapping_data, 'fba-explorer-results')
+        if output_file is not None:
+          objects_created.append(output_file)
+          
+        # HTML table displayed to the user in the report at the end
+        summary = output_util.createSummary(output_json)
 
-        # Build a report and return
+        # Build a report
         reportObj = {
           'objects_created': objects_created,
-          'text_message': 'Finished running FBA Explorer'
+          'text_message': summary
         }
         report = KBaseReport(self.callback_url)
         report_info = report.create({'report': reportObj, 'workspace_name': params['workspace_name']})
-
 
         # Construct the output to send back
         output = {'report_name': report_info['name'],
