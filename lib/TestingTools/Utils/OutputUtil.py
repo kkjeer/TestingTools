@@ -1,6 +1,5 @@
 import logging
 import os
-import uuid
 
 # This class is responsible for constructing objects that will be used in output files and reports.
 class OutputUtil:
@@ -11,36 +10,9 @@ class OutputUtil:
     self.shared_folder = config['scratch']
     logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                         level=logging.INFO)
-  
-  # This method creates a JSON object that contains the parameters and outputs of each FBA run.
-  def createOutputJson(self, tasks, kbparallel_result):
-    result = {}
-
-    param_names = list(tasks[0]['parameters'].keys())
-    param_names = [item for item in param_names if item != "workspace"]
-
-    for i in range(0, len(tasks)):
-      t = tasks[i]
-      p = t['parameters']
-
-      key = f'Run {i}'
-
-      # Get information from the fba result
-      r = kbparallel_result['results'][i]['final_job_state']['result'][0]
-      objective = r['objective']
-      new_fba_ref = r['new_fba_ref']
-
-      obj = {}
-      for param in param_names:
-        obj[param] = str(p[param])
-      obj['objective_value'] = str(objective)
-      obj['result_ref'] = new_fba_ref
     
-      result[key] = obj
-    return result
-    
-  # This method creates the data to populate a StringDataTable file.
-  def createTableData(self, output_json):
+  # This method creates data to populate a StringDataTable file.
+  def createStringDataTableData(self, output_json):
     rows = list(output_json.keys())
     cols = list(output_json[rows[0]].keys())
 
@@ -59,6 +31,8 @@ class OutputUtil:
 
     return table_data
   
+  # This method creates data to populate an AttributeMapping file.
+  # The data is "flipped" - it uses the "column" keys of the json as the rows and the "row" keys as columns.
   def createFlippedAttributeMappingData(self, output_json):
     rows = list(output_json.keys())
     cols = list(output_json[rows[0]].keys())
@@ -76,6 +50,7 @@ class OutputUtil:
     }
     return mapping_data
   
+  # This method creates data to populate an AttributeMapping file.
   def createAttributeMappingData(self, output_json):
     rows = list(output_json.keys())
     cols = list(output_json[rows[0]].keys())

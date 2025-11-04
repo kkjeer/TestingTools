@@ -154,6 +154,44 @@ This sample module contains one small method that filters contigs.
                              'output is not type dict as required.')
         # return the results
         return [output]
+    
+    def run_TestFeedback(self, ctx, params):
+        """
+        This example function accepts any number of parameters and returns results in a KBaseReport
+        :param params: instance of mapping from String to unspecified object
+        :returns: instance of type "ReportResults" -> structure: parameter
+           "report_name" of String, parameter "report_ref" of String
+        """
+        # ctx is the context object
+        # return variables are: output
+        #BEGIN run_TestingTools
+
+        # Print statements to stdout/stderr are captured and available as the App log
+        logging.info('Starting run_TestFeedback function. Params=' + pformat(params))
+
+        # Build the report
+        reportObj = {
+            'objects_created': [],
+            'text_message': ''
+        }
+        report = KBaseReport(self.callback_url)
+        report_info = report.create({'report': reportObj, 'workspace_name': params['workspace_name']})
+
+        # Construct output
+        output = {'report_name': report_info['name'],
+                  'report_ref': report_info['ref']
+                  }
+        logging.info('returning:' + pformat(output))
+                
+        #END run_TestFeedback
+
+        # At some point might do deeper type checking...
+        if not isinstance(output, dict):
+            raise ValueError('Method run_TestFeedback return value ' +
+                             'output is not type dict as required.')
+        # return the results
+        return [output]
+    
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",
