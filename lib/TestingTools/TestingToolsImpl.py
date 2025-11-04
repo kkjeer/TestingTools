@@ -164,7 +164,7 @@ This sample module contains one small method that filters contigs.
         """
         # ctx is the context object
         # return variables are: output
-        #BEGIN run_TestingTools
+        #BEGIN run_TestFeedback
 
         # Print statements to stdout/stderr are captured and available as the App log
         logging.info('Starting run_TestFeedback function. Params=' + pformat(params))
@@ -185,10 +185,6 @@ This sample module contains one small method that filters contigs.
                 
         #END run_TestFeedback
 
-        # At some point might do deeper type checking...
-        if not isinstance(output, dict):
-            raise ValueError('Method run_TestFeedback return value ' +
-                             'output is not type dict as required.')
         # return the results
         return [output]
     
