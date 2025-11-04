@@ -73,14 +73,14 @@ class FileUtil:
       return None
 
   # Each of these methods is a wrapper for writing a particular file type to the workspace.
-  def writeStringTable(self, table_data, file_name, description):
+  def writeStringTable(self, table_data, file_name, description=''):
     name = file_name or 'string-data-table'
     return self.writeFile(table_data, name, 'MAK.StringDataTable', description)
     
-  def writeSampleSet(self, sample_set_data, file_name, description):
+  def writeSampleSet(self, sample_set_data, file_name, description=''):
     name = file_name or 'sample-set'
     return self.writeFile(sample_set_data, name, 'KBaseSets.SampleSet', description)
     
-  def writeAttributeMappingFile(self, mapping_data, file_name, description):
+  def writeAttributeMappingFile(self, mapping_data, file_name, description=''):
     name = file_name or 'attribute-mapping'
     return self.writeFile(mapping_data, name, 'KBaseExperiments.AttributeMapping', description)
