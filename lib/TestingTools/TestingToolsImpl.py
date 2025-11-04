@@ -109,7 +109,7 @@ This sample module contains one small method that filters contigs.
         app_explorer_util = AppExplorerUtil(self.config)
         fba_explorer_util = FBAExplorerUtil(self.config)
         output_util = OutputUtil(self.config)
-        file_util = FileUtil(self.config)
+        file_util = FileUtil(self.config, ctx, params)
         
         # Run the FBA app instances using KBParallel
         tasks = fba_explorer_util.createFBATasks(params)
@@ -125,7 +125,7 @@ This sample module contains one small method that filters contigs.
         # Write the output json to an AttributeMapping file
         mapping_data = output_util.createFlippedAttributeMappingData(output_json)
         logging.info(f'FBAExplorer: attribute mapping data: {mapping_data}')
-        output_file = file_util.writeAttributeMappingFile(ctx, params, mapping_data, 'fba-explorer-results')
+        output_file = file_util.writeAttributeMappingFile(mapping_data, 'fba-explorer-results')
         if output_file is not None:
           objects_created.append(output_file)
           
