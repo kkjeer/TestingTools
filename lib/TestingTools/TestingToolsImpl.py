@@ -5,14 +5,11 @@ import logging
 import os
 from pprint import pformat
 
-from Bio import SeqIO
-
 from Utils.AppExplorerUtil import AppExplorerUtil
 from Utils.FBAExplorerUtil import FBAExplorerUtil
 from Utils.OutputUtil import OutputUtil
 from Utils.FileUtil import FileUtil
 
-from installed_clients.AssemblyUtilClient import AssemblyUtil
 from installed_clients.KBaseReportClient import KBaseReport
 #END_HEADER
 
@@ -71,78 +68,17 @@ This sample module contains one small method that filters contigs.
         # Print statements to stdout/stderr are captured and available as the App log
         logging.info('Starting run_TestingTools function. Params=' + pformat(params))
 
-        # Step 1 - Parse/examine the parameters and catch any errors
-        # It is important to check that parameters exist and are defined, and that nice error
-        # messages are returned to users.  Parameter values go through basic validation when
-        # defined in a Narrative App, but advanced users or other SDK developers can call
-        # this function directly, so validation is still important.
-        logging.info('Validating parameters.')
-        if 'workspace_name' not in params:
-            raise ValueError('Parameter workspace_name is not set in input arguments')
-        workspace_name = params['workspace_name']
-        if 'assembly_input_ref' not in params:
-            raise ValueError('Parameter assembly_input_ref is not set in input arguments')
-        assembly_input_ref = params['assembly_input_ref']
-        if 'min_length' not in params:
-            raise ValueError('Parameter min_length is not set in input arguments')
-        min_length_orig = params['min_length']
-        min_length = None
-        try:
-            min_length = int(min_length_orig)
-        except ValueError:
-            raise ValueError('Cannot parse integer from min_length parameter (' + str(min_length_orig) + ')')
-        if min_length < 0:
-            raise ValueError('min_length parameter cannot be negative (' + str(min_length) + ')')
-
-
-        # Step 2 - Download the input data as a Fasta and
-        # We can use the AssemblyUtils module to download a FASTA file from our Assembly data object.
-        # The return object gives us the path to the file that was created.
-        logging.info('Downloading Assembly data as a Fasta file.')
-        assemblyUtil = AssemblyUtil(self.callback_url)
-        fasta_file = assemblyUtil.get_assembly_as_fasta({'ref': assembly_input_ref})
-
-
-        # Step 3 - Actually perform the filter operation, saving the good contigs to a new fasta file.
-        # We can use BioPython to parse the Fasta file and build and save the output to a file.
-        good_contigs = []
-        n_total = 0
-        n_remaining = 0
-        for record in SeqIO.parse(fasta_file['path'], 'fasta'):
-            n_total += 1
-            if len(record.seq) >= min_length:
-                good_contigs.append(record)
-                n_remaining += 1
-
-        logging.info('Filtered Assembly to ' + str(n_remaining) + ' contigs out of ' + str(n_total))
-        filtered_fasta_file = os.path.join(self.shared_folder, 'filtered.fasta')
-        SeqIO.write(good_contigs, filtered_fasta_file, 'fasta')
-
-
-        # Step 4 - Save the new Assembly back to the system
-        logging.info('Uploading filtered Assembly data.')
-        new_assembly = assemblyUtil.save_assembly_from_fasta({'file': {'path': filtered_fasta_file},
-                                                              'workspace_name': workspace_name,
-                                                              'assembly_name': fasta_file['assembly_name']
-                                                              })
-
-
-        # Step 5 - Build a Report and return
+        # Build the report
         reportObj = {
-            'objects_created': [{'ref': new_assembly, 'description': 'Filtered contigs'}],
-            'text_message': 'Filtered Assembly to ' + str(n_remaining) + ' contigs out of ' + str(n_total)
+            'objects_created': [],
+            'text_message': ''
         }
         report = KBaseReport(self.callback_url)
         report_info = report.create({'report': reportObj, 'workspace_name': params['workspace_name']})
 
-
-        # STEP 6: contruct the output to send back
+        # Construct output
         output = {'report_name': report_info['name'],
-                  'report_ref': report_info['ref'],
-                  'assembly_output': new_assembly,
-                  'n_initial_contigs': n_total,
-                  'n_contigs_removed': n_total - n_remaining,
-                  'n_contigs_remaining': n_remaining
+                  'report_ref': report_info['ref']
                   }
         logging.info('returning:' + pformat(output))
                 
