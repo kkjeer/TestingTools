@@ -8,6 +8,7 @@ from pprint import pformat
 from Utils.AppExplorerUtil import AppExplorerUtil
 from Utils.FBAExplorerUtil import FBAExplorerUtil
 from Utils.OutputUtil import OutputUtil
+from Utils.InputUtil import InputUtil
 from Utils.FileUtil import FileUtil
 
 from installed_clients.KBaseReportClient import KBaseReport
@@ -170,17 +171,19 @@ This sample module contains one small method that filters contigs.
         logging.info('Starting run_TestFeedback function. Params=' + pformat(params))
 
         # Create utilities
+        input_util = InputUtil(self.config)
         file_util = FileUtil(self.config, ctx, params)
 
         # Read the input file (output file of an explorer app)
         input_file = file_util.readFileById(ctx, params['mapping_id'])
-        if input_file is not None:
-          logging.info(f'TestFeedback: got input file: {input_file}')
+        explorer_output = input_util.getFlippedAttributeMappingOutputAsJson(input_file)
+        if explorer_output is not None:
+          logging.info(f'got results of app explorer: {pformat(explorer_output)}')
 
         # Build the report
         reportObj = {
-            'objects_created': [],
-            'text_message': ''
+          'objects_created': [],
+          'text_message': ''
         }
         report = KBaseReport(self.callback_url)
         report_info = report.create({'report': reportObj, 'workspace_name': params['workspace_name']})
@@ -189,7 +192,6 @@ This sample module contains one small method that filters contigs.
         output = {'report_name': report_info['name'],
                   'report_ref': report_info['ref']
                   }
-        logging.info('returning:' + pformat(output))
                 
         #END run_TestFeedback
 
