@@ -169,6 +169,14 @@ This sample module contains one small method that filters contigs.
         # Print statements to stdout/stderr are captured and available as the App log
         logging.info('Starting run_TestFeedback function. Params=' + pformat(params))
 
+        # Create utilities
+        file_util = FileUtil(self.config, ctx, params)
+
+        # Read the input file (output file of an explorer app)
+        input_file = file_util.readFileById(ctx, params['mapping_id'])
+        if input_file is not None:
+          logging.info(f'TestFeedback: got input file: {input_file}')
+
         # Build the report
         reportObj = {
             'objects_created': [],
