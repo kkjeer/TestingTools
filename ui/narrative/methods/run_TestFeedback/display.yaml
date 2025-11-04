@@ -21,7 +21,7 @@ suggestions:
 parameters:
   mapping_id:
     ui-name: |
-      Attribute mapping
+      Test runs
     short-hint: |
       AttributeMapping output by an explorer app containing the results of running a KBase app for different parameters
   run_id:

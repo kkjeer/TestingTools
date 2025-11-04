@@ -182,7 +182,7 @@ This sample module contains one small method that filters contigs.
         explorer_output = input_util.getFlippedAttributeMappingOutputAsJson(input_file)
 
         # Add the feedback to the FBA results
-        results_with_feedback = test_feedback_util.addFeedbackToFBAOutput(explorer_output, params['param_group'])
+        results_with_feedback = test_feedback_util.addFeedbackToExplorerOutput(explorer_output, params['param_group'])
 
         # Save the annotated results (with feedback) to an output file
         objects_created = []
