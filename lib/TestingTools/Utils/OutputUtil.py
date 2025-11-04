@@ -38,7 +38,7 @@ class OutputUtil:
     cols = list(output_json[rows[0]].keys())
     instances = {}
     for c in cols:
-      instances[c] = [output_json[key][c] for key in output_json]
+      instances[c] = [str(output_json[key][c]) for key in output_json]
     mapping_data = {
       'attributes': [
         {'attribute': row, 
@@ -56,7 +56,7 @@ class OutputUtil:
     cols = list(output_json[rows[0]].keys())
     instances = {}
     for key in output_json:
-      instances[key] = [output_json[key][param] for param in output_json[key]]
+      instances[key] = [str(output_json[key][param]) for param in output_json[key]]
     mapping_data = {
       'attributes': [{'attribute': param, 'source': 'upload', 'unit': ''} for param in cols],
       'instances': instances,

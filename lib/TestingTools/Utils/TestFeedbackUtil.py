@@ -26,7 +26,7 @@ class TestFeedbackUtil:
         result[r] = {
           **output_json[r],
           'feedback': category['feedback'],
-          'expected_value': category['expected_value']
+          'expected_value': str(category['expected_value'])
         }
 
     return result
