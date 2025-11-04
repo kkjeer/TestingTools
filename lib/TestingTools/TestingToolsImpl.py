@@ -7,6 +7,7 @@ from pprint import pformat
 
 from Utils.AppExplorerUtil import AppExplorerUtil
 from Utils.FBAExplorerUtil import FBAExplorerUtil
+from Utils.TestFeedbackUtil import TestFeedbackUtil
 from Utils.OutputUtil import OutputUtil
 from Utils.InputUtil import InputUtil
 from Utils.FileUtil import FileUtil
@@ -171,19 +172,30 @@ This sample module contains one small method that filters contigs.
         logging.info('Starting run_TestFeedback function. Params=' + pformat(params))
 
         # Create utilities
+        test_feedback_util = TestFeedbackUtil(self.config)
         input_util = InputUtil(self.config)
+        output_util = OutputUtil(self.config)
         file_util = FileUtil(self.config, ctx, params)
 
         # Read the input file (output file of an explorer app)
         input_file = file_util.readFileById(ctx, params['mapping_id'])
         explorer_output = input_util.getFlippedAttributeMappingOutputAsJson(input_file)
-        if explorer_output is not None:
-          logging.info(f'got results of app explorer: {pformat(explorer_output)}')
+
+        # Add the feedback to the FBA results
+        results_with_feedback = test_feedback_util.addFeedbackToFBAOutput(explorer_output, params['param_group'])
+
+        # Save the annotated results (with feedback) to an output file
+        objects_created = []
+        mapping_data = output_util.createAttributeMappingData(results_with_feedback)
+        output_file = file_util.writeAttributeMappingFile(mapping_data, 'test-feedback-results')
+        if output_file is not None:
+          objects_created.append(output_file)
 
         # Build the report
+        summary = output_util.createSummary(results_with_feedback)
         reportObj = {
-          'objects_created': [],
-          'text_message': ''
+          'objects_created': objects_created,
+          'text_message': summary
         }
         report = KBaseReport(self.callback_url)
         report_info = report.create({'report': reportObj, 'workspace_name': params['workspace_name']})
