@@ -15,5 +15,6 @@ module TestingTools {
     funcdef run_TestingTools(mapping<string,UnspecifiedObject> params) returns (ReportResults output) authentication required;
     funcdef run_FBAExplorer(mapping<string,UnspecifiedObject> params) returns (ReportResults output) authentication required;
     funcdef run_TestFeedback(mapping<string,UnspecifiedObject> params) returns (ReportResults output) authentication required;
+    funcdef run_FBAExperiments(mapping<string,UnspecifiedObject> params) returns (ReportResults output) authentication required;
 
 };
