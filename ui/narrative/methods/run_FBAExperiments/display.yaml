@@ -44,18 +44,12 @@ parameters:
     short-hint: |
       What fraction of the optimal objective value should analyses like FVA, single gene knockout, and transcriptomic FBA be constrained at? Values must be between 0 and 1.
 
-  detailed_logs:
-    ui-name: |
-      Detailed logs
-    short-hint: |
-      Whether to include detailed logs (including the full results of all FBA runs) when the app finishes running. (Use this for debugging purposes.)
-
 parameter-groups:
   param_group:
     ui-name: |
-      FBA parameters
+      Experiments
     short-hint: |
-      Parameters to pass to the runs of flux balance analysis.
+      Set of experiments (each consisting of a set of variations on the base media).
 
 description: |
   <p>This app runs flux balance analysis multiple times, given one base organism, one base media, and a set of experiments (where each experiment consists of a set of variations to the base media).</p>

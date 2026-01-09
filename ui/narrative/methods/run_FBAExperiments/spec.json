@@ -40,27 +40,12 @@
       "text_options": {
         "validate_as": "float"
       }
-    },
-    {
-      "default_values": ["0"],
-      "advanced": true,
-      "checkbox_options": {
-        "unchecked_value": 0,
-        "checked_value": 1
-      },
-      "text_options": {
-        "valid_ws_types": []
-      },
-      "allow_multiple": false,
-      "optional": false,
-      "field_type": "checkbox",
-      "id": "detailed_logs"
     }
   ],
   "parameter-groups": [
     {
       "id": "param_group",
-      "parameters": ["fbamodel_id", "media_id", "activation_coefficient"],
+      "parameters": ["activation_coefficient"],
       "optional": false,
       "allow_multiple": true,
       "with_border": true
@@ -81,12 +66,16 @@
           "target_property": "workspace_id"
         },
         {
-          "input_parameter": "param_group",
-          "target_property": "param_group"
+          "input_parameter": "fbamodel_id",
+          "target_property": "fbamodel_id"
         },
         {
-          "input_parameter": "detailed_logs",
-          "target_property": "detailed_logs"
+          "input_parameter": "media_id",
+          "target_property": "media_id"
+        },
+        {
+          "input_parameter": "param_group",
+          "target_property": "param_group"
         }
       ],
       "output_mapping": [
