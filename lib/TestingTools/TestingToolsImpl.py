@@ -223,7 +223,7 @@ This sample module contains one small method that filters contigs.
         #BEGIN run_FBAExperiments
 
         # Print statements to stdout/stderr are captured and available as the App log
-        logging.info('Starting run_Experiments function. Params=' + pformat(params))
+        logging.info('Starting run_FBAExperiments function. Params=' + pformat(params))
 
         fba_experiments_util = FBAExperimentsUtil(self.config)
 

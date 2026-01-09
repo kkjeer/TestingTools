@@ -97,6 +97,10 @@
           "target_property": "media_id"
         },
         {
+          "input_parameter": "variations",
+          "target_property": "variations"
+        },
+        {
           "input_parameter": "experiments",
           "target_property": "experiments"
         }
