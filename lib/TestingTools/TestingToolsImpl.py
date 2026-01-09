@@ -225,7 +225,11 @@ This sample module contains one small method that filters contigs.
         # Print statements to stdout/stderr are captured and available as the App log
         logging.info('Starting run_FBAExperiments function. Params=' + pformat(params))
 
+        app_explorer_util = AppExplorerUtil(self.config)
         fba_experiments_util = FBAExperimentsUtil(self.config)
+        tasks = fba_experiments_util.createFBATasks(params)
+        kbparallel_result = app_explorer_util.runKBParallel(tasks[0:10])
+        logging.info(f'FBAExperiments: KBParallel result: {kbparallel_result}')
 
         # Build the report
         reportObj = {
