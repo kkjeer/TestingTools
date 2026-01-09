@@ -1,5 +1,6 @@
 import logging
 import os
+from FileUtil import FileUtil
 
 # This class contains utilities for the FBAExperiments app.
 class FBAExperimentsUtil:
@@ -12,7 +13,11 @@ class FBAExperimentsUtil:
                         level=logging.INFO)
     
   # This method creates a set of tasks for the edit_media app.
-  def createFBATasks(self, params):
+  def createFBATasks(self, ctx, params):
+    file_util = FileUtil(self.config, ctx, params)
+    media = file_util.readFileById(ctx, params['media_id'])
+    if media is not None:
+      logging.info(f'read base media: {media}')
     tasks = []
     for i in range(0, len(params['experiments'])):
       experiment = params['experiments'][i]
