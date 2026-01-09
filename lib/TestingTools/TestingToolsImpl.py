@@ -8,6 +8,7 @@ from pprint import pformat
 from Utils.AppExplorerUtil import AppExplorerUtil
 from Utils.FBAExplorerUtil import FBAExplorerUtil
 from Utils.TestFeedbackUtil import TestFeedbackUtil
+from Utils.FBAExperimentsUtil import FBAExperimentsUtil
 from Utils.OutputUtil import OutputUtil
 from Utils.InputUtil import InputUtil
 from Utils.FileUtil import FileUtil
@@ -207,6 +208,45 @@ This sample module contains one small method that filters contigs.
                 
         #END run_TestFeedback
 
+        # return the results
+        return [output]
+    
+    def run_FBAExperiments(self, ctx, params):
+        """
+        This example function accepts any number of parameters and returns results in a KBaseReport
+        :param params: instance of mapping from String to unspecified object
+        :returns: instance of type "ReportResults" -> structure: parameter
+           "report_name" of String, parameter "report_ref" of String
+        """
+        # ctx is the context object
+        # return variables are: output
+        #BEGIN run_FBAExperiments
+
+        # Print statements to stdout/stderr are captured and available as the App log
+        logging.info('Starting run_Experiments function. Params=' + pformat(params))
+
+        fba_experiments_util = FBAExperimentsUtil(self.config)
+
+        # Build the report
+        reportObj = {
+            'objects_created': [],
+            'text_message': 'Finished running FBAExperiments'
+        }
+        report = KBaseReport(self.callback_url)
+        report_info = report.create({'report': reportObj, 'workspace_name': params['workspace_name']})
+
+        # Construct output
+        output = {'report_name': report_info['name'],
+                  'report_ref': report_info['ref']
+                  }
+        logging.info('returning:' + pformat(output))
+                
+        #END run_FBAExperiments
+
+        # At some point might do deeper type checking...
+        if not isinstance(output, dict):
+            raise ValueError('Method run_FBAExperiments return value ' +
+                             'output is not type dict as required.')
         # return the results
         return [output]
     

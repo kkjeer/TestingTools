@@ -1,0 +1,61 @@
+#
+# define display information
+#
+name: FBA Experiments
+
+tooltip: |
+  Run a flux balance analysis app with a single base organism and variations in media
+
+screenshots: []
+
+icon: icon.png
+
+#
+# define a set of similar apps that might be useful to the user
+#
+suggestions:
+  apps:
+    related: []
+    next: []
+
+#
+# Configure the display and description of parameters
+#
+parameters:
+  fbamodel_id:
+    ui-name: |
+      FBA model
+    short-hint: |
+      The metabolic model consisting of genome-wide set of stoichiometric reactions, compounds, and the weighted components of the biomass on which you wish to carry out Flux Balance Analysis (FBA). This model can be built using the “Build Metabolic Model” App.
+    placeholder: |
+      Model for FBA
+
+  media_id:
+    ui-name: |
+      Media (defaults to Complete media)
+    short-hint: |
+      Media specifies the set of chemical compounds an organism can use for its growth. If left blank, the default Complete media is used. The “Complete” media is an abstraction of what is available in our biochemistry database. Every compound that can be transported from the extracellular compartment into the cell–or, in other words, for which a transport reaction is available–is used in the Complete media. This list is built in real-time, meaning that whenever you run FBA with Complete media, the available transporters are parsed from the media database–and is therefore not stored permanently in any media object in the workspace.
+    placeholder: |
+      Growth condition for FBA
+
+  activation_coefficient:
+    ui-name: |
+      Activation coefficient
+    short-hint: |
+      What fraction of the optimal objective value should analyses like FVA, single gene knockout, and transcriptomic FBA be constrained at? Values must be between 0 and 1.
+
+  detailed_logs:
+    ui-name: |
+      Detailed logs
+    short-hint: |
+      Whether to include detailed logs (including the full results of all FBA runs) when the app finishes running. (Use this for debugging purposes.)
+
+parameter-groups:
+  param_group:
+    ui-name: |
+      FBA parameters
+    short-hint: |
+      Parameters to pass to the runs of flux balance analysis.
+
+description: |
+  <p>This app runs flux balance analysis multiple times, given one base organism, one base media, and a set of experiments (where each experiment consists of a set of variations to the base media).</p>
