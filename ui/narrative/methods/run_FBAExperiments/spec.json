@@ -31,6 +31,22 @@
       "field_type": "text"
     },
     {
+      "id": "compound_id",
+      "default_values": [""],
+      "advanced": false,
+      "optional": false,
+      "allow_multiple": false,
+      "field_type": "dynamic_dropdown",
+      "dynamic_dropdown_options": {
+        "data_source": "custom",
+        "service_function": "BiochemistryAPI.search_compounds",
+        "service_version": "release",
+        "service_params": [{ "query": "{{dynamic_dropdown_input}}" }],
+        "selection_id": "id",
+        "description_template": "<strong>{{id}}</strong>: {{name}}"
+      }
+    },
+    {
       "default_values": ["0.5"],
       "id": "activation_coefficient",
       "advanced": true,
@@ -44,8 +60,15 @@
   ],
   "parameter-groups": [
     {
-      "id": "param_group",
-      "parameters": ["activation_coefficient"],
+      "id": "variations",
+      "parameters": ["compound_id"],
+      "optional": false,
+      "allow_multiple": true,
+      "with_border": true
+    },
+    {
+      "id": "experiments",
+      "parameters": ["variations"],
       "optional": false,
       "allow_multiple": true,
       "with_border": true
@@ -74,8 +97,8 @@
           "target_property": "media_id"
         },
         {
-          "input_parameter": "param_group",
-          "target_property": "param_group"
+          "input_parameter": "experiments",
+          "target_property": "experiments"
         }
       ],
       "output_mapping": [
