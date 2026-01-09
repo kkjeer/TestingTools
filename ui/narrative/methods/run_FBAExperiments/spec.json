@@ -45,30 +45,12 @@
         "selection_id": "id",
         "description_template": "<strong>{{id}}</strong>: {{name}}"
       }
-    },
-    {
-      "default_values": ["0.5"],
-      "id": "activation_coefficient",
-      "advanced": true,
-      "field_type": "text",
-      "allow_multiple": false,
-      "optional": false,
-      "text_options": {
-        "validate_as": "float"
-      }
     }
   ],
   "parameter-groups": [
     {
-      "id": "variations",
-      "parameters": ["compound_id"],
-      "optional": false,
-      "allow_multiple": true,
-      "with_border": true
-    },
-    {
       "id": "experiments",
-      "parameters": ["variations"],
+      "parameters": ["compound_id"],
       "optional": false,
       "allow_multiple": true,
       "with_border": true
@@ -95,10 +77,6 @@
         {
           "input_parameter": "media_id",
           "target_property": "media_id"
-        },
-        {
-          "input_parameter": "variations",
-          "target_property": "variations"
         },
         {
           "input_parameter": "experiments",
