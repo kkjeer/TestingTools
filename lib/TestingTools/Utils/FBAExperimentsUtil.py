@@ -16,6 +16,7 @@ class FBAExperimentsUtil:
     tasks = []
     for i in range(0, len(params['experiments'])):
       experiment = params['experiments'][i]
+      compound_id = experiment['compound_id']
       for flux in range(experiment['from_flux'], experiment['to_flux'] + experiment['increment'], experiment['increment']):
         tasks.append({
           'module_name': 'fba_tools',
@@ -23,9 +24,14 @@ class FBAExperimentsUtil:
           'version': 'release',
           'parameters': {
             'media_id': params['media_id'],
-            'media_output_id': f'fba-experiments-media-{i}-{flux}',
+            'media_output_id': f'fba-experiments-media-{compound_id}-{flux}',
             'compounds_to_add': [],
-            'compounds_to_change': [],
+            'compounds_to_change': [
+              {
+                'change_id': experiment['compound_id'],
+                'change_maxflux': flux
+              }
+            ],
             'compounds_to_remove': [],
             'workspace': params['workspace_name']
           }

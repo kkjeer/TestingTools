@@ -16,6 +16,10 @@ class AppExplorerUtil:
   
   # This method runs KBParallel on the given set of tasks.
   def runKBParallel(self, tasks):
+    logging.info(f'KBParallel: running {len(tasks)} tasks')
+    if len(tasks) > 10:
+      logging.warning(f'KBParallel: cannot run more than 10 tasks')
+      return None
     # Configure how KBParallel should run.
     # Note that KBParallel is not a supported app. There is currently no supported way
     # to run other apps from within a KBase app; KBParallel is only used as a way to
