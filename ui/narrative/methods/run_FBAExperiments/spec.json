@@ -45,12 +45,45 @@
         "selection_id": "id",
         "description_template": "<strong>{{id}}</strong>: {{name}}"
       }
+    },
+    {
+      "default_values": ["0"],
+      "id": "from_flux",
+      "advanced": true,
+      "field_type": "text",
+      "allow_multiple": false,
+      "optional": false,
+      "text_options": {
+        "validate_as": "float"
+      }
+    },
+    {
+      "default_values": ["100"],
+      "id": "to_flux",
+      "advanced": true,
+      "field_type": "text",
+      "allow_multiple": false,
+      "optional": false,
+      "text_options": {
+        "validate_as": "float"
+      }
+    },
+    {
+      "default_values": ["5"],
+      "id": "increment",
+      "advanced": true,
+      "field_type": "text",
+      "allow_multiple": false,
+      "optional": false,
+      "text_options": {
+        "validate_as": "float"
+      }
     }
   ],
   "parameter-groups": [
     {
       "id": "experiments",
-      "parameters": ["compound_id"],
+      "parameters": ["compound_id", "from_flux", "to_flux", "increment"],
       "optional": false,
       "allow_multiple": true,
       "with_border": true

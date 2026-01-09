@@ -44,12 +44,30 @@ parameters:
     short-hint: |
       Compound to vary in one variation.
 
+  from_flux:
+    ui-name: |
+      Starting flux value
+    short-hint: |
+      Minimum value of the range of max flux for the compound.
+
+  to_flux:
+    ui-name: |
+      Ending flux value
+    short-hint: |
+      Maximum value of the range of max flux for the compound.
+
+  increment:
+    ui-name: |
+      Flux increment
+    short-hint: |
+      Increment between values of max flux for the compound.
+
 parameter-groups:
   experiments:
     ui-name: |
       Experiments
     short-hint: |
-      Set of experiments (each consisting of a set of variations on the base media).
+      Set of experiments (each consisting of one variation on the base media).
 
 description: |
-  <p>This app runs flux balance analysis multiple times, given one base organism, one base media, and a set of experiments (where each experiment consists of a set of variations to the base media).</p>
+  <p>This app runs flux balance analysis multiple times, given one base organism, one base media, and a set of experiments (where each experiment consists of one variation to the base media).</p>
