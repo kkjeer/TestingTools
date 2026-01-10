@@ -233,6 +233,8 @@ This sample module contains one small method that filters contigs.
         tasks = fba_experiments_util.createFBATasks(media, params)
         kbparallel_result = app_explorer_util.runKBParallel(tasks[0:10])
         logging.info(f'FBAExperiments: KBParallel result: {kbparallel_result}')
+        media_refs = fba_experiments_util.getMediaRefs(kbparallel_result)
+        logging.info(f'FBAExperiments: new media refs: {media_refs}')
 
         # Build the report
         reportObj = {

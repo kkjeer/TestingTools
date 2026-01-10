@@ -51,3 +51,15 @@ class FBAExperimentsUtil:
         })
     logging.info(f'edit_media tasks ({len(tasks)}): {tasks}')
     return tasks
+  
+  # This method returns the set of refs to the set of media files created by a KBParallel run of edit_media tasks.
+  def getMediaRefs(self, kbparallel_result):
+    if kbparallel_result is None:
+      return None
+    media_refs = []
+    for r in kbparallel_result['results']:
+      if r['is_error']:
+        continue
+      new_media_ref = r['final_job_state']['result'][0]['new_media_ref']
+      media_refs.append(new_media_ref)
+    return media_refs
