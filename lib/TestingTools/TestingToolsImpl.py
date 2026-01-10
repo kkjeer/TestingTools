@@ -261,8 +261,23 @@ This sample module contains one small method that filters contigs.
           edit_media_result = app_explorer_util.runKBParallel(edit_media_tasks)
           media_refs = fba_experiments_util.getMediaRefs(edit_media_result)
           logging.info(f'FBAExperiments: new media refs: {media_refs}')
-          # Run flux balance analysis with the base organism and each newly created media file
+
           fluxes = fba_experiments_util.getFluxes(params, i)
+
+          # Sanity check: for each new media file, verify that it contains the correct max flux for the current compound
+          for i in range(0, len(media_refs)):
+            mr = media_refs[i]
+            media = file_util.readFileById(mr)
+            mediacompounds = media['data'][0]['data']['mediacompounds']
+            existing_compound = next((x for x in mediacompounds if x['compound_ref'].endswith(compound_id)), None)
+            if existing_compound is None:
+              logging.warning(f'FBAExperiments: failed to create compound {compound_id} in media {mr}')
+            max_flux = existing_compound['maxFlux']
+            expected_flux = fluxes[i]
+            logging.info(f'FBAExperiments: {compound_id} expected max flux: {expected_flux}, actual: {max_flux}')
+
+
+          # Run flux balance analysis with the base organism and each newly created media file
           fba_tasks = fba_experiments_util.createFBATasks(media_refs, compound_id, fluxes, params)
           fba_result = app_explorer_util.runKBParallel(fba_tasks)
           logging.info(f'FBAExperiments: FBA KBParallel result: {fba_result}')

@@ -20,6 +20,7 @@ class AppExplorerUtil:
     if tasks is None:
       logging.warning('KBParallel: tasks are None')
       return None
+    # TODO: create a batch method that can run more than 100 tasks by breaking them up into multiple KBParallel calls
     if len(tasks) > 100:
       logging.warning(f'KBParallel: cannot run more than 100 tasks')
       return None
