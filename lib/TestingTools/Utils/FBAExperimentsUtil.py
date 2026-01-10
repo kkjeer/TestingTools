@@ -1,6 +1,5 @@
 import logging
 import os
-from FileUtil import FileUtil
 
 # This class contains utilities for the FBAExperiments app.
 class FBAExperimentsUtil:
