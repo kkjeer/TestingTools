@@ -94,3 +94,24 @@ class FBAExperimentsUtil:
     ]
     logging.info(f'run_flux_balance_anlysis tasks: {tasks}')
     return tasks
+  
+  # This method creates a JSON object that contains the parameters and outputs of each FBA run.
+  def createOutputJson(self, params, index, kbparallel_result):
+    result = {}
+    compound_id = params['experiments'][index]['compound_id']
+    fluxes = self.getFluxes(params, index)
+    for i in range(0, len(kbparallel_result['results'])):
+      key = f'{compound_id} experiment {i}'
+
+      # Get information from the fba result
+      r = kbparallel_result['results'][i]['final_job_state']['result'][0]
+      objective = r['objective']
+      new_fba_ref = r['new_fba_ref']
+
+      obj = {}
+      obj['max_flux'] = fluxes[i]
+      obj['objective_value'] = str(objective)
+      # obj['result_ref'] = new_fba_ref
+    
+      result[key] = obj
+    return result

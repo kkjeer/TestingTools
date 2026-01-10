@@ -242,6 +242,8 @@ This sample module contains one small method that filters contigs.
           fba_tasks = fba_experiments_util.createFBATasks(media_refs, compound_id, fluxes, params)
           fba_result = app_explorer_util.runKBParallel(fba_tasks)
           logging.info(f'FBAExperiments: FBA KBParallel result: {fba_result}')
+          output = fba_experiments_util.createOutputJson(params, i, fba_result)
+          logging.info(f'FBAExperiments: output json: {pformat(output)}')
 
         # tasks = fba_experiments_util.createEditMediaTasks(media, params)
         # kbparallel_result = app_explorer_util.runKBParallel(tasks[0:10])
