@@ -227,9 +227,12 @@ This sample module contains one small method that filters contigs.
 
         app_explorer_util = AppExplorerUtil(self.config)
         file_util = FileUtil(self.config, ctx, params)
+        output_util = OutputUtil(self.config)
         fba_experiments_util = FBAExperimentsUtil(self.config)
 
         media = file_util.readFileById(ctx, params['media_id'])
+
+        output_json = {}
 
         for i in range(0, len(params['experiments'])):
           logging.info(f'--- FBAExperiments: experiment {i}: compound {params["experiments"][i]["compound_id"]} ---')
@@ -244,17 +247,13 @@ This sample module contains one small method that filters contigs.
           logging.info(f'FBAExperiments: FBA KBParallel result: {fba_result}')
           output = fba_experiments_util.createOutputJson(params, i, fba_result)
           logging.info(f'FBAExperiments: output json: {pformat(output)}')
-
-        # tasks = fba_experiments_util.createEditMediaTasks(media, params)
-        # kbparallel_result = app_explorer_util.runKBParallel(tasks[0:10])
-        # logging.info(f'FBAExperiments: KBParallel result: {kbparallel_result}')
-        # media_refs = fba_experiments_util.getMediaRefs(kbparallel_result)
-        # logging.info(f'FBAExperiments: new media refs: {media_refs}')
+          output_json = {**output_json, **output}
 
         # Build the report
+        summary = output_util.createSummary(output_json)
         reportObj = {
             'objects_created': [],
-            'text_message': 'Finished running FBAExperiments'
+            'text_message': summary
         }
         report = KBaseReport(self.callback_url)
         report_info = report.create({'report': reportObj, 'workspace_name': params['workspace_name']})
