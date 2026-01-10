@@ -97,6 +97,8 @@ class FBAExperimentsUtil:
   
   # This method creates a JSON object that contains the parameters and outputs of each FBA run.
   def createOutputJson(self, params, index, kbparallel_result):
+    # Sanity check
+    logging.info(f'FBAExperiments: getting output json for index: {index} out of {len(params["experiments"])} experiments')
     result = {}
     compound_id = params['experiments'][index]['compound_id']
     fluxes = self.getFluxes(params, index)

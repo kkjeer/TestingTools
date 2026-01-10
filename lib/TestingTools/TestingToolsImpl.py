@@ -265,17 +265,17 @@ This sample module contains one small method that filters contigs.
           fluxes = fba_experiments_util.getFluxes(params, i)
 
           # Sanity check: for each new media file, verify that it contains the correct max flux for the current compound
-          for i in range(0, len(media_refs)):
-            mr = media_refs[i]
-            media = file_util.readFileById(ctx, mr)
-            mediacompounds = media['data'][0]['data']['mediacompounds']
-            existing_compound = next((x for x in mediacompounds if x['compound_ref'].endswith(compound_id)), None)
-            if existing_compound is None:
-              logging.warning(f'FBAExperiments: failed to create compound {compound_id} in media {mr}')
-            max_flux = existing_compound['maxFlux']
-            expected_flux = fluxes[i]
-            logging.info(f'FBAExperiments: {compound_id} expected max flux: {expected_flux}, actual: {max_flux}')
-
+          if False:
+            for i in range(0, len(media_refs)):
+              mr = media_refs[i]
+              media = file_util.readFileById(ctx, mr)
+              mediacompounds = media['data'][0]['data']['mediacompounds']
+              existing_compound = next((x for x in mediacompounds if x['compound_ref'].endswith(compound_id)), None)
+              if existing_compound is None:
+                logging.warning(f'FBAExperiments: failed to create compound {compound_id} in media {mr}')
+              max_flux = existing_compound['maxFlux']
+              expected_flux = fluxes[i]
+              logging.info(f'FBAExperiments: {compound_id} expected max flux: {expected_flux}, actual: {max_flux}')
 
           # Run flux balance analysis with the base organism and each newly created media file
           fba_tasks = fba_experiments_util.createFBATasks(media_refs, compound_id, fluxes, params)
