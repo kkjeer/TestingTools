@@ -229,7 +229,7 @@ This sample module contains one small method that filters contigs.
         file_util = FileUtil(self.config, ctx, params)
         fba_experiments_util = FBAExperimentsUtil(self.config)
 
-        media = file_util.readFileById(params['media_id'])
+        media = file_util.readFileById(ctx, params['media_id'])
         tasks = fba_experiments_util.createFBATasks(media, params)
         kbparallel_result = app_explorer_util.runKBParallel(tasks[0:10])
         logging.info(f'FBAExperiments: KBParallel result: {kbparallel_result}')
