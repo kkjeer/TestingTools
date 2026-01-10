@@ -20,8 +20,8 @@ class AppExplorerUtil:
     if tasks is None:
       logging.warning('KBParallel: tasks are None')
       return None
-    if len(tasks) > 10:
-      logging.warning(f'KBParallel: cannot run more than 10 tasks')
+    if len(tasks) > 100:
+      logging.warning(f'KBParallel: cannot run more than 100 tasks')
       return None
     # Configure how KBParallel should run.
     # Note that KBParallel is not a supported app. There is currently no supported way

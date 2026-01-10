@@ -237,7 +237,9 @@ This sample module contains one small method that filters contigs.
           edit_media_result = app_explorer_util.runKBParallel(edit_media_tasks)
           media_refs = fba_experiments_util.getMediaRefs(edit_media_result)
           logging.info(f'FBAExperiments: new media refs: {media_refs}')
-          fba_tasks = fba_experiments_util.createFBATasks(media_refs, params)
+          compound_id = params['experiments'][i]['compound_id']
+          fluxes = fba_experiments_util.getFluxes(params, i)
+          fba_tasks = fba_experiments_util.createFBATasks(media_refs, compound_id, fluxes, params)
           fba_result = app_explorer_util.runKBParallel(fba_tasks)
           logging.info(f'FBAExperiments: FBA KBParallel result: {fba_result}')
 

@@ -11,7 +11,7 @@ class FBAExperimentsUtil:
     logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                         level=logging.INFO)
     
-  # This method creates a set of tasks for the edit_media app.
+  # This method returns a set of tasks for the edit_media app.
   def createEditMediaTasks(self, media, params, indices=None):
     if media is None:
       logging.warning(f'media is none - cannot create edit_media tasks')
@@ -66,12 +66,14 @@ class FBAExperimentsUtil:
     media_refs = []
     for r in kbparallel_result['results']:
       if r['is_error']:
+        media_refs.append('')
         continue
       new_media_ref = r['final_job_state']['result'][0]['new_media_ref']
       media_refs.append(new_media_ref)
     return media_refs
   
-  def createFBATasks(self, media_refs, params):
+  # This method returns a set of tasks for the run_flux_balance_analysis app.
+  def createFBATasks(self, media_refs, compound_id, fluxes, params):
     if media_refs is None:
       logging.warning('media_refs is None - cannot create FBA tasks')
       return None
@@ -81,7 +83,7 @@ class FBAExperimentsUtil:
         'function_name': 'run_flux_balance_analysis',
         'version': 'release',
         'parameters': {
-          'fba_output_id': f'fbaexperiments-fba-output-{i}',
+          'fba_output_id': f'fba-experiment-output-{compound_id}-{fluxes[i]}',
           'target_reaction': 'bio1',
           'fbamodel_id': params['fbamodel_id'],
           'media_id': media_refs[i],
