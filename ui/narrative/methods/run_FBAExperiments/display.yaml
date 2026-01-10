@@ -62,7 +62,7 @@ parameters:
     short-hint: |
       Increment between values of max flux for the compound.
 
-  increment:
+  cleanup:
     ui-name: |
       Cleanup
     short-hint: |
