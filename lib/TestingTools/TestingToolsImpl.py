@@ -267,7 +267,7 @@ This sample module contains one small method that filters contigs.
           # Sanity check: for each new media file, verify that it contains the correct max flux for the current compound
           for i in range(0, len(media_refs)):
             mr = media_refs[i]
-            media = file_util.readFileById(mr)
+            media = file_util.readFileById(ctx, mr)
             mediacompounds = media['data'][0]['data']['mediacompounds']
             existing_compound = next((x for x in mediacompounds if x['compound_ref'].endswith(compound_id)), None)
             if existing_compound is None:
