@@ -40,3 +40,24 @@ class AppExplorerUtil:
     parallel_runner = KBParallel(self.callback_url)
     result = parallel_runner.run_batch(batch_run_params)
     return result
+  
+  # This method returns the set of refs to output objects created by a KBParallel run of run_flux_balance_analysis tasks.
+  def getFBARefs(self, kbparallel_result):
+    fba_refs = []
+    for r in kbparallel_result['results']:
+      new_fba_ref = r['final_job_state']['result'][0]['new_fba_ref']
+      fba_refs.append(new_fba_ref)
+    return fba_refs
+  
+  # This method returns the set of refs to the set of media files created by a KBParallel run of edit_media tasks.
+  def getMediaRefs(self, kbparallel_result):
+    if kbparallel_result is None:
+      return None
+    media_refs = []
+    for r in kbparallel_result['results']:
+      if r['is_error']:
+        media_refs.append('')
+        continue
+      new_media_ref = r['final_job_state']['result'][0]['new_media_ref']
+      media_refs.append(new_media_ref)
+    return media_refs

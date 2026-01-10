@@ -118,7 +118,7 @@ This sample module contains one small method that filters contigs.
         tasks = fba_explorer_util.createFBATasks(params)
         kbparallel_result = app_explorer_util.runKBParallel(tasks)
         logging.info(f'FBAExplorer: KBParallel result: {kbparallel_result}')
-        fba_refs = fba_explorer_util.getFBARefs(kbparallel_result)
+        fba_refs = app_explorer_util.getFBARefs(kbparallel_result)
         output_json = fba_explorer_util.createOutputJson(tasks, kbparallel_result)
         
         # Set of objects created during this app run (will be linked to in the report at the end)
@@ -259,7 +259,7 @@ This sample module contains one small method that filters contigs.
           # Create media files based on the variations in the current compound
           edit_media_tasks = fba_experiments_util.createEditMediaTasks(media, params, indices=[i])
           edit_media_result = app_explorer_util.runKBParallel(edit_media_tasks)
-          media_refs = fba_experiments_util.getMediaRefs(edit_media_result)
+          media_refs = app_explorer_util.getMediaRefs(edit_media_result)
           logging.info(f'FBAExperiments: new media refs: {media_refs}')
 
           fluxes = fba_experiments_util.getFluxes(params, i)
@@ -281,6 +281,8 @@ This sample module contains one small method that filters contigs.
           fba_tasks = fba_experiments_util.createFBATasks(media_refs, compound_id, fluxes, params)
           fba_result = app_explorer_util.runKBParallel(fba_tasks)
           logging.info(f'FBAExperiments: FBA KBParallel result: {fba_result}')
+          fba_refs = app_explorer_util.getFBARefs(fba_result)
+          logging.info(f'FBAExperiments: fba refs: {fba_refs}')
           output = fba_experiments_util.createOutputJson(params, i, fba_result)
           logging.info(f'FBAExperiments: output json: {pformat(output)}')
           output_json = {**output_json, **output}

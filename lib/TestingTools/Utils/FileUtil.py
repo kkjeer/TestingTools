@@ -83,3 +83,16 @@ class FileUtil:
   def writeAttributeMappingFile(self, mapping_data, file_name, description=''):
     name = file_name or 'attribute-mapping'
     return self.writeFile(mapping_data, name, 'KBaseExperiments.AttributeMapping', description)
+  
+  # This method deletes a set of objects from the workspace, given a set of references to the objects.
+  def deleteFiles(self, ctx, refs):
+    if refs is None or len(refs) < 1:
+      logging.error('cannot delete empty file refs')
+      return None
+    try:
+      ws = Workspace(self.ws_url, token=ctx['token'])
+      obj = ws.get_objects2({'objects' : [{'ref' : r} for r in refs]})
+      return obj
+    except Exception as e:
+      logging.error(f'could not delete file {refs}: {e}')
+      return None

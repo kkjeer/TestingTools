@@ -31,14 +31,6 @@ class FBAExplorerUtil:
     logging.info(f'run_flux_balance_anlysis tasks: {tasks}')
     return tasks
   
-  # This method returns the set of refs to output objects created by a KBParallel run.
-  def getFBARefs(self, kbparallel_result):
-    fba_refs = []
-    for r in kbparallel_result['results']:
-      new_fba_ref = r['final_job_state']['result'][0]['new_fba_ref']
-      fba_refs.append(new_fba_ref)
-    return fba_refs
-  
   # This method creates a JSON object that contains the parameters and outputs of each FBA run.
   def createOutputJson(self, tasks, kbparallel_result):
     result = {}
