@@ -78,6 +78,21 @@
       "text_options": {
         "validate_as": "float"
       }
+    },
+    {
+      "default_values": ["1"],
+      "advanced": true,
+      "checkbox_options": {
+        "unchecked_value": 0,
+        "checked_value": 1
+      },
+      "text_options": {
+        "valid_ws_types": []
+      },
+      "allow_multiple": false,
+      "optional": true,
+      "field_type": "checkbox",
+      "id": "cleanup"
     }
   ],
   "parameter-groups": [
@@ -116,6 +131,10 @@
         {
           "input_parameter": "experiments",
           "target_property": "experiments"
+        },
+        {
+          "input_parameter": "cleanup",
+          "target_property": "cleanup"
         }
       ],
       "output_mapping": [
