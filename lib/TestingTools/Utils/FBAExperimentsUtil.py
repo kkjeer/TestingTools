@@ -24,8 +24,18 @@ class FBAExperimentsUtil:
       existing_compound = next((x for x in mediacompounds if x['compound_ref'].endswith(compound_id)), None)
       logging.info(f'compound {compound_id} existing: {existing_compound}')
       for flux in range(experiment['from_flux'], experiment['to_flux'] + experiment['increment'], experiment['increment']):
-        compounds_to_add = [{'add_id': compound_id, 'add_maxflux': flux, 'add_concentration': '0.001'}] if existing_compound is None else []
-        compounds_to_change = [{'change_id': compound_id, 'change_maxflux': flux, 'change_concentration': '0.001'}] if existing_compound is not None else []
+        compounds_to_add = [{
+          'add_id': compound_id, 
+          'add_maxflux': flux, 
+          'add_minflux': '-100', 
+          'add_concentration': '0.001'
+        }] if existing_compound is None else []
+        compounds_to_change = [{
+          'change_id': compound_id, 
+          'change_maxflux': flux, 
+          'change_minflux': str(existing_compound['minFlux']), 
+          'change_concentration': str(existing_compound['concentration'])
+        }] if existing_compound is not None else []
         tasks.append({
           'module_name': 'fba_tools',
           'function_name': 'edit_media',
