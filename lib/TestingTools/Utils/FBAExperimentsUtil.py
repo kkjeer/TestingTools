@@ -82,7 +82,7 @@ class FBAExperimentsUtil:
         'version': 'release',
         'parameters': {
           'fba_output_id': f'fbaexperiments-fba-output-{i}',
-          'target_reaction': 'biomass',
+          'target_reaction': 'bio1',
           'fbamodel_id': params['fbamodel_id'],
           'media_id': media_refs[i],
           'workspace': params['workspace_name']

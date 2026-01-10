@@ -25,7 +25,6 @@ class FileUtil:
     try:
       ws = Workspace(self.ws_url, token=ctx['token'])
       obj = ws.get_objects2({'objects' : [{'ref' : file_ref}]})
-      logging.info(f'read file {file_ref}: {obj}')
       return obj
     except Exception as e:
       logging.error(f'could not read file {file_ref}: {e}')
