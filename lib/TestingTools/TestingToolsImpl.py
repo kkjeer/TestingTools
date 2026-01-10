@@ -233,14 +233,35 @@ This sample module contains one small method that filters contigs.
         media = file_util.readFileById(ctx, params['media_id'])
 
         output_json = {}
+        base_task = {
+          'module_name': 'fba_tools',
+          'function_name': 'run_flux_balance_analysis',
+          'version': 'release',
+          'parameters': {
+            'fba_output_id': f'fba-experiment-output-base',
+            'target_reaction': 'bio1',
+            'fbamodel_id': params['fbamodel_id'],
+            'media_id': params['media_id'],
+            'workspace': params['workspace_name']
+          }
+        }
+        base_result = app_explorer_util.runKBParallel([base_task])
+        if base_result is not None:
+          output_json['Base'] = {
+            'compound_id': '---',
+            'max_flux': '---',
+            'objective_value': base_result['results'][0]['final_job_state']['result'][0]['objective']
+          }
 
         for i in range(0, len(params['experiments'])):
-          logging.info(f'--- FBAExperiments: experiment {i}: compound {params["experiments"][i]["compound_id"]} ---')
+          compound_id = params['experiments'][i]['compound_id']
+          logging.info(f'--- FBAExperiments: experiment {i}: compound {compound_id} ---')
+          # Create media files based on the variations in the current compound
           edit_media_tasks = fba_experiments_util.createEditMediaTasks(media, params, indices=[i])
           edit_media_result = app_explorer_util.runKBParallel(edit_media_tasks)
           media_refs = fba_experiments_util.getMediaRefs(edit_media_result)
           logging.info(f'FBAExperiments: new media refs: {media_refs}')
-          compound_id = params['experiments'][i]['compound_id']
+          # Run flux balance analysis with the base organism and each newly created media file
           fluxes = fba_experiments_util.getFluxes(params, i)
           fba_tasks = fba_experiments_util.createFBATasks(media_refs, compound_id, fluxes, params)
           fba_result = app_explorer_util.runKBParallel(fba_tasks)
@@ -252,8 +273,8 @@ This sample module contains one small method that filters contigs.
         # Build the report
         summary = output_util.createSummary(output_json)
         reportObj = {
-            'objects_created': [],
-            'text_message': summary
+          'objects_created': [],
+          'text_message': summary
         }
         report = KBaseReport(self.callback_url)
         report_info = report.create({'report': reportObj, 'workspace_name': params['workspace_name']})

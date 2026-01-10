@@ -106,10 +106,10 @@ class FBAExperimentsUtil:
       # Get information from the fba result
       r = kbparallel_result['results'][i]['final_job_state']['result'][0]
       objective = r['objective']
-      new_fba_ref = r['new_fba_ref']
 
       obj = {}
-      obj['max_flux'] = fluxes[i]
+      obj['compound_id'] = compound_id
+      obj['max_flux'] = str(fluxes[i])
       obj['objective_value'] = str(objective)
       # obj['result_ref'] = new_fba_ref
     
