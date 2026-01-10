@@ -17,6 +17,9 @@ class AppExplorerUtil:
   # This method runs KBParallel on the given set of tasks.
   def runKBParallel(self, tasks):
     logging.info(f'KBParallel: running {len(tasks)} tasks')
+    if tasks is None:
+      logging.warning('KBParallel: tasks are None')
+      return None
     if len(tasks) > 10:
       logging.warning(f'KBParallel: cannot run more than 10 tasks')
       return None
