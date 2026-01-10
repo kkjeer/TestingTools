@@ -232,7 +232,7 @@ This sample module contains one small method that filters contigs.
         media = file_util.readFileById(ctx, params['media_id'])
 
         for i in range(0, len(params['experiments'])):
-          logging.info(f'--- FBAExperiments: experiment {i}: compound {params['experiments'][i]['compound_id']} ---')
+          logging.info(f'--- FBAExperiments: experiment {i}: compound {params["experiments"][i]["compound_id"]} ---')
           edit_media_tasks = fba_experiments_util.createEditMediaTasks(media, params, indices=[i])
           edit_media_result = app_explorer_util.runKBParallel(edit_media_tasks)
           media_refs = fba_experiments_util.getMediaRefs(edit_media_result)
