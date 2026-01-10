@@ -12,18 +12,21 @@ class FBAExperimentsUtil:
                         level=logging.INFO)
     
   # This method creates a set of tasks for the edit_media app.
-  def createFBATasks(self, media, params):
+  def createEditMediaTasks(self, media, params, indices=None):
     if media is None:
       logging.warning(f'media is none - cannot create edit_media tasks')
       return None
     mediacompounds = media['data'][0]['data']['mediacompounds']
     tasks = []
-    for i in range(0, len(params['experiments'])):
+    if indices is None:
+      indices = [i for i in range(0, len(params['experiments']))]
+    for i in indices:
       experiment = params['experiments'][i]
       compound_id = experiment['compound_id']
       existing_compound = next((x for x in mediacompounds if x['compound_ref'].endswith(compound_id)), None)
-      logging.info(f'compound {compound_id} existing: {existing_compound}')
-      for flux in range(experiment['from_flux'], experiment['to_flux'] + experiment['increment'], experiment['increment']):
+      logging.info(f'existing compound {compound_id}: {existing_compound}')
+      fluxes = self.getFluxes(params, i)
+      for flux in fluxes:
         compounds_to_add = [{
           'add_id': compound_id, 
           'add_maxflux': flux, 
@@ -49,8 +52,12 @@ class FBAExperimentsUtil:
             'workspace': params['workspace_name']
           }
         })
-    logging.info(f'edit_media tasks ({len(tasks)}): {tasks}')
     return tasks
+  
+  # This helper method returns the set of fluxes to use to create variations on the base media for a given compound.
+  def getFluxes(self, params, index):
+    experiment = params['experiments'][index]
+    return [flux for flux in range(experiment['from_flux'], experiment['to_flux'] + experiment['increment'], experiment['increment'])]
   
   # This method returns the set of refs to the set of media files created by a KBParallel run of edit_media tasks.
   def getMediaRefs(self, kbparallel_result):
@@ -63,3 +70,25 @@ class FBAExperimentsUtil:
       new_media_ref = r['final_job_state']['result'][0]['new_media_ref']
       media_refs.append(new_media_ref)
     return media_refs
+  
+  def createFBATasks(self, media_refs, params):
+    if media_refs is None:
+      logging.warning('media_refs is None - cannot create FBA tasks')
+      return None
+    tasks = [
+      {
+        'module_name': 'fba_tools',
+        'function_name': 'run_flux_balance_analysis',
+        'version': 'release',
+        'parameters': {
+          'fba_output_id': f'fbaexperiments-fba-output-{i}',
+          'target_reaction': 'biomass',
+          'fbamodel_id': params['fbamodel_id'],
+          'media_id': media_refs[i],
+          'workspace': params['workspace_name']
+        }
+      }
+      for i in range(0, len(media_refs))
+    ]
+    logging.info(f'run_flux_balance_anlysis tasks: {tasks}')
+    return tasks

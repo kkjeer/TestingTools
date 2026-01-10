@@ -230,11 +230,22 @@ This sample module contains one small method that filters contigs.
         fba_experiments_util = FBAExperimentsUtil(self.config)
 
         media = file_util.readFileById(ctx, params['media_id'])
-        tasks = fba_experiments_util.createFBATasks(media, params)
-        kbparallel_result = app_explorer_util.runKBParallel(tasks[0:10])
-        logging.info(f'FBAExperiments: KBParallel result: {kbparallel_result}')
-        media_refs = fba_experiments_util.getMediaRefs(kbparallel_result)
-        logging.info(f'FBAExperiments: new media refs: {media_refs}')
+
+        for i in range(0, len(params['experiments'])):
+          logging.info(f'--- FBAExperiments: experiment {i}: compound {params['experiments'][i]['compound_id']} ---')
+          edit_media_tasks = fba_experiments_util.createEditMediaTasks(media, params, indices=[i])
+          edit_media_result = app_explorer_util.runKBParallel(edit_media_tasks)
+          media_refs = fba_experiments_util.getMediaRefs(edit_media_result)
+          logging.info(f'FBAExperiments: new media refs: {media_refs}')
+          fba_tasks = fba_experiments_util.createFBATasks(media_refs, params)
+          fba_result = app_explorer_util.runKBParallel(fba_tasks)
+          logging.info(f'FBAExperiments: FBA KBParallel result: {fba_result}')
+
+        # tasks = fba_experiments_util.createEditMediaTasks(media, params)
+        # kbparallel_result = app_explorer_util.runKBParallel(tasks[0:10])
+        # logging.info(f'FBAExperiments: KBParallel result: {kbparallel_result}')
+        # media_refs = fba_experiments_util.getMediaRefs(kbparallel_result)
+        # logging.info(f'FBAExperiments: new media refs: {media_refs}')
 
         # Build the report
         reportObj = {
