@@ -91,8 +91,8 @@ class FileUtil:
       return None
     try:
       ws = Workspace(self.ws_url, token=ctx['token'])
-      obj = ws.get_objects2({'objects' : [{'ref' : r} for r in refs]})
+      obj = ws.delete_objects({'objects' : [{'ref' : r} for r in refs]})
       return obj
     except Exception as e:
-      logging.error(f'could not delete file {refs}: {e}')
+      logging.error(f'could not delete files {refs}: {e}')
       return None
