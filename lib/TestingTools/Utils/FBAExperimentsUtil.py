@@ -101,6 +101,16 @@ class FBAExperimentsUtil:
     logging.info(f'FBAExperiments: getting output json for index: {index} out of {len(params["experiments"])} experiments')
     result = {}
     compound_id = params['experiments'][index]['compound_id']
+
+    base_obj = {
+      'compound_id': compound_id + '-base',
+      'max_flux': base_flux,
+      'objective_value': base_objective,
+      'max_flux_compare': '---',
+      'objective_compare': '---'
+    }
+    result[f'{compound_id} base'] = base_obj
+
     fluxes = self.getFluxes(params, index)
     for i in range(0, len(kbparallel_result['results'])):
       key = f'{compound_id} experiment {i}'
@@ -114,9 +124,7 @@ class FBAExperimentsUtil:
 
       obj = {}
       obj['compound_id'] = compound_id
-      obj['base_max_flux'] = str(base_flux)
       obj['max_flux'] = str(fluxes[i])
-      obj['base_objective_value'] = str(base_objective)
       obj['objective_value'] = str(objective)
       obj['max_flux_compare'] = max_flux_compare
       obj['objective_compare'] = objective_compare
@@ -140,8 +148,9 @@ class FBAExperimentsUtil:
       b = float(y)
       if a < b:
         return 'increase'
-      elif x > y:
+      elif a > b:
         return 'decrease'
       return 'equal'
     except Exception as e:
+      logging.error(f'FBAExperiments: could not compare {x} and {y}. Exception: {e}')
       return 'n/a'
