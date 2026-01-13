@@ -135,8 +135,13 @@ class FBAExperimentsUtil:
   
   # This method returns a description of how y compares to x.
   def compareNumbers(self, x, y):
-    if x < y:
-      return 'increase'
-    elif x > y:
-      return 'decrease'
-    return 'equal'
+    try:
+      a = float(x)
+      b = float(y)
+      if a < b:
+        return 'increase'
+      elif x > y:
+        return 'decrease'
+      return 'equal'
+    except Exception as e:
+      return 'n/a'
