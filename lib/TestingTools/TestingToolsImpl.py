@@ -325,7 +325,7 @@ This sample module contains one small method that filters contigs.
         logging.info(f'FBAExperiments metamorphic relations: {relations}')
 
         # Build the report
-        summary = output_util.createSummary(experiment_json)
+        summary = output_util.createSummary(experiment_json) + '<br />' + output_util.createSummary(relations)
         reportObj = {
           'objects_created': objects_created,
           'text_message': summary

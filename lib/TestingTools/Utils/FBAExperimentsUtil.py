@@ -158,30 +158,30 @@ class FBAExperimentsUtil:
   # This method returns a set of metamorphic relations that hold based on the information in the given json.
   # The method works by only comparing each change to a compound to the base value of the compound
   # (and not each changed compound value to each other).
-  def getMetamorphicRelations(output_json):
+  def getMetamorphicRelations(self, experiment_json):
     result = {}
-    for key in output_json:
-      rows = [r for r in output_json[key] if 'base' not in r['compound_id']]
+    for key in experiment_json:
+      rows = [r for r in experiment_json[key] if 'base' not in r['compound_id']]
       compound_id = rows[0]['compound_id']
       increased = [r for r in rows if r['max_flux_compare'] == 'increase']
       decreased = [r for r in rows if r['max_flux_compare'] == 'decrease']
       antecedents = {'increase': increased, 'decrease': decreased}
       for a in antecedents:
         ante = antecedents[a]
-        k = f'{a} {compound_id}'
+        k = f'Experiment: {compound_id}'
         # Greater objective
         if all(r['objective_compare'] == 'increase' for r in ante):
-          result[k] = 'increase objective value'
+          result[k] = {'antecedent': k, 'consequent': 'increase objective value'}
         # Greater or equal objective
         if all(r['objective_compare'] == 'increase' or r['objective_value'] == 'equal' for r in ante):
-          result[k] = 'increase or maintain objective value'
+          result[k] = {'antecedent': k, 'consequent': 'increase or maintain objective value'}
         # Lesser objective
         elif all(r['objective_compare'] == 'decrease' for r in ante):
-          result[k] = 'decrease objective value'
+          result[k] = {'antecedent': k, 'consequent': 'decrease objective value'}
         # Lesser or equal objective
         elif all(r['objective_compare'] == 'decrease' or r['objective_compare'] == 'equal' for r in ante):
-          result[k] = 'decrease or maintain objective value'
+          result[k] = {'antecedent': k, 'consequent': 'decrease or maintain objective value'}
         # Equal objective
         elif all(r['objective_compare'] == 'equal' for r in ante):
-          result[k] = 'no change to objective value'
+          result[k] = {'antecedent': k, 'consequent': 'no change to objective value'}
     return result
