@@ -230,7 +230,7 @@ This sample module contains one small method that filters contigs.
         output_util = OutputUtil(self.config)
         fba_experiments_util = FBAExperimentsUtil(self.config)
 
-        media = file_util.readFileById(ctx, params['media_id'])
+        base_media = file_util.readFileById(ctx, params['media_id'])
 
         output_json = {}
         base_task = {
@@ -253,14 +253,18 @@ This sample module contains one small method that filters contigs.
             'objective_value': base_result['results'][0]['final_job_state']['result'][0]['objective']
           }
 
+        files_to_cleanup = []
+
         for i in range(0, len(params['experiments'])):
           compound_id = params['experiments'][i]['compound_id']
           logging.info(f'--- FBAExperiments: experiment {i}: compound {compound_id} ---')
           # Create media files based on the variations in the current compound
-          edit_media_tasks = fba_experiments_util.createEditMediaTasks(media, params, indices=[i])
+          edit_media_tasks = fba_experiments_util.createEditMediaTasks(base_media, params, indices=[i])
           edit_media_result = app_explorer_util.runKBParallel(edit_media_tasks)
           media_refs = app_explorer_util.getMediaRefs(edit_media_result)
           logging.info(f'FBAExperiments: new media refs: {media_refs}')
+          if media_refs is not None:
+            files_to_cleanup = files_to_cleanup + media_refs
 
           fluxes = fba_experiments_util.getFluxes(params, i)
 
@@ -283,9 +287,17 @@ This sample module contains one small method that filters contigs.
           logging.info(f'FBAExperiments: FBA KBParallel result: {fba_result}')
           fba_refs = app_explorer_util.getFBARefs(fba_result)
           logging.info(f'FBAExperiments: fba refs: {fba_refs}')
+          if fba_refs is not None:
+            files_to_cleanup = files_to_cleanup + fba_refs
+
+          # Update the output object with the results of running the experiment
           output = fba_experiments_util.createOutputJson(params, i, fba_result)
           logging.info(f'FBAExperiments: output json: {pformat(output)}')
           output_json = {**output_json, **output}
+
+        # If specified, delete all created media and FBA output files
+        if params['cleanup'] == 1:
+          file_util.deleteFiles(ctx, files_to_cleanup)
 
         # Build the report
         summary = output_util.createSummary(output_json)
