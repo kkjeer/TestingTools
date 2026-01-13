@@ -109,12 +109,17 @@ class FBAExperimentsUtil:
       r = kbparallel_result['results'][i]['final_job_state']['result'][0]
       objective = r['objective']
 
+      max_flux_compare = self.compareNumbers(base_flux, fluxes[i])
+      objective_compare = self.compareNumbers(base_objective, objective)
+
       obj = {}
       obj['compound_id'] = compound_id
-      obj['max_flux'] = str(fluxes[i])
-      obj['objective_value'] = str(objective)
       obj['base_max_flux'] = str(base_flux)
+      obj['max_flux'] = str(fluxes[i])
       obj['base_objective_value'] = str(base_objective)
+      obj['objective_value'] = str(objective)
+      obj['max_flux_compare'] = max_flux_compare
+      obj['objective_compare'] = objective_compare
     
       result[key] = obj
     return result
@@ -127,3 +132,11 @@ class FBAExperimentsUtil:
     if existing_compound is not None:
       return existing_compound['maxFlux']
     return 0
+  
+  # This method returns a description of how y compares to x.
+  def compareNumbers(self, x, y):
+    if x < y:
+      return 'increase'
+    elif x > y:
+      return 'decrease'
+    return 'equal'

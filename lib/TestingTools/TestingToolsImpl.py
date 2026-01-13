@@ -246,17 +246,21 @@ This sample module contains one small method that filters contigs.
           }
         }
         base_result = app_explorer_util.runKBParallel([base_task])
+        if base_result is None:
+          raise ValueError('FBAExperiments: could not run base experiment.')
+
+        base_fba_ref = base_result['results'][0]['final_job_state']['result'][0]['new_fba_ref']
         base_objective = base_result['results'][0]['final_job_state']['result'][0]['objective']
         if base_result is not None:
           output_json['Base'] = {
             'compound_id': '---',
+            'base_max_flux': '---',
             'max_flux': '---',
+            'base_objective_value': base_objective,
             'objective_value': base_objective,
-            'bax_max_flux': '---',
-            'base_objective_value': base_objective
           }
 
-        files_to_cleanup = []
+        files_to_cleanup = [base_fba_ref]
 
         for i in range(0, len(params['experiments'])):
           compound_id = params['experiments'][i]['compound_id']
@@ -326,8 +330,8 @@ This sample module contains one small method that filters contigs.
 
         # At some point might do deeper type checking...
         if not isinstance(output, dict):
-            raise ValueError('Method run_FBAExperiments return value ' +
-                             'output is not type dict as required.')
+          raise ValueError('Method run_FBAExperiments return value ' +
+                            'output is not type dict as required.')
         # return the results
         return [output]
     
