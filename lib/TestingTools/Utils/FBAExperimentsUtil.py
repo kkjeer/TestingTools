@@ -121,7 +121,7 @@ class FBAExperimentsUtil:
   
   # This method returns the maxFlux value of the compound with the given id in the given media
   # (if the compound is present; otherwise it returns 0).
-  def getBaseCompoundFlux(base_media, compound_id):
+  def getBaseCompoundFlux(self, base_media, compound_id):
     mediacompounds = base_media['data'][0]['data']['mediacompounds']
     existing_compound = next((x for x in mediacompounds if x['compound_ref'].endswith(compound_id)), None)
     if existing_compound is not None:
