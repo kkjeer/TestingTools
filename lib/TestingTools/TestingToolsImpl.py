@@ -296,8 +296,12 @@ This sample module contains one small method that filters contigs.
           output_json = {**output_json, **output}
 
         # If specified, delete all created media and FBA output files
+        logging.info(f'FBAExperiments: cleanup: {params["cleanup"]}')
         if params['cleanup'] == 1:
+          logging.info(f'FBAExperiments: deleting files {files_to_cleanup}')
           file_util.deleteFiles(ctx, files_to_cleanup)
+        else:
+          logging.info(f'FBAExperiments: not deleting files {files_to_cleanup}')
 
         # Build the report
         summary = output_util.createSummary(output_json)
