@@ -230,9 +230,11 @@ This sample module contains one small method that filters contigs.
         output_util = OutputUtil(self.config)
         fba_experiments_util = FBAExperimentsUtil(self.config)
 
+        objects_created = []
+
         base_media = file_util.readFileById(ctx, params['media_id'])
 
-        output_json = {}
+        experiment_json = {}
         base_task = {
           'module_name': 'fba_tools',
           'function_name': 'run_flux_balance_analysis',
@@ -301,7 +303,7 @@ This sample module contains one small method that filters contigs.
           base_flux = fba_experiments_util.getBaseCompoundFlux(base_media, compound_id)
           output = fba_experiments_util.createOutputJson(params, i, fba_result, base_flux, base_objective)
           logging.info(f'FBAExperiments: output json: {pformat(output)}')
-          output_json = {**output_json, **output}
+          experiment_json = {**experiment_json, **output}
 
         # If specified, delete all created media and FBA output files
         logging.info(f'FBAExperiments: cleanup: {params["cleanup"]}')
@@ -311,10 +313,21 @@ This sample module contains one small method that filters contigs.
         else:
           logging.info(f'FBAExperiments: not deleting files {files_to_cleanup}')
 
+        # Write the experimental data json to an AttributeMapping file
+        experiment_mapping_data = output_util.createFlippedAttributeMappingData(experiment_json)
+        logging.info(f'FBAExperiments: attribute mapping data: {experiment_mapping_data}')
+        experiment_output_file = file_util.writeAttributeMappingFile(experiment_mapping_data, 'fba-experiments-data')
+        if experiment_output_file is not None:
+          objects_created.append(experiment_output_file)
+
+        # Get the set of metamorphic relations that hold based on the experimental data
+        relations = fba_experiments_util.getMetamorphicRelations(experiment_json)
+        logging.info(f'FBAExperiments metamorphic relations: {relations}')
+
         # Build the report
-        summary = output_util.createSummary(output_json)
+        summary = output_util.createSummary(experiment_json)
         reportObj = {
-          'objects_created': [],
+          'objects_created': objects_created,
           'text_message': summary
         }
         report = KBaseReport(self.callback_url)
