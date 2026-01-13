@@ -246,11 +246,14 @@ This sample module contains one small method that filters contigs.
           }
         }
         base_result = app_explorer_util.runKBParallel([base_task])
+        base_objective = base_result['results'][0]['final_job_state']['result'][0]['objective']
         if base_result is not None:
           output_json['Base'] = {
             'compound_id': '---',
             'max_flux': '---',
-            'objective_value': base_result['results'][0]['final_job_state']['result'][0]['objective']
+            'objective_value': base_objective,
+            'bax_max_flux': '---',
+            'base_objective_value': base_objective
           }
 
         files_to_cleanup = []
@@ -291,7 +294,8 @@ This sample module contains one small method that filters contigs.
             files_to_cleanup = files_to_cleanup + fba_refs
 
           # Update the output object with the results of running the experiment
-          output = fba_experiments_util.createOutputJson(params, i, fba_result)
+          base_flux = fba_experiments_util.getBaseCompoundFlux(base_media, compound_id)
+          output = fba_experiments_util.createOutputJson(params, i, fba_result, base_flux, base_objective)
           logging.info(f'FBAExperiments: output json: {pformat(output)}')
           output_json = {**output_json, **output}
 

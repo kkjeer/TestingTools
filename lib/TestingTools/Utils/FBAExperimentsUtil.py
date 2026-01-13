@@ -96,7 +96,7 @@ class FBAExperimentsUtil:
     return tasks
   
   # This method creates a JSON object that contains the parameters and outputs of each FBA run.
-  def createOutputJson(self, params, index, kbparallel_result):
+  def createOutputJson(self, params, index, kbparallel_result, base_flux, base_objective):
     # Sanity check
     logging.info(f'FBAExperiments: getting output json for index: {index} out of {len(params["experiments"])} experiments')
     result = {}
@@ -113,7 +113,17 @@ class FBAExperimentsUtil:
       obj['compound_id'] = compound_id
       obj['max_flux'] = str(fluxes[i])
       obj['objective_value'] = str(objective)
-      # obj['result_ref'] = new_fba_ref
+      obj['base_max_flux'] = str(base_flux)
+      obj['base_objective_value'] = str(base_objective)
     
       result[key] = obj
     return result
+  
+  # This method returns the maxFlux value of the compound with the given id in the given media
+  # (if the compound is present; otherwise it returns 0).
+  def getBaseCompoundFlux(base_media, compound_id):
+    mediacompounds = base_media['data'][0]['data']['mediacompounds']
+    existing_compound = next((x for x in mediacompounds if x['compound_ref'].endswith(compound_id)), None)
+    if existing_compound is not None:
+      return existing_compound['maxFlux']
+    return 0
