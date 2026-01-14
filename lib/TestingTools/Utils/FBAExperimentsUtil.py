@@ -168,17 +168,23 @@ class FBAExperimentsUtil:
       increased = [r for r in rows if r['max_flux_compare'] == 'increase']
       decreased = [r for r in rows if r['max_flux_compare'] == 'decrease']
       antecedents = {'increases': increased, 'decreases': decreased}
-      logging.info(f'FBAExperiments: experiment {i}: compound {compound_id}: antecedents: {antecedents}')
 
       # Determine what happened to the objective value when the compound was increased or decreased
       for a in antecedents:
-        k = f'{compound_id} experiment {i} antecedent {a}'
         rows = antecedents[a]
+        if len(rows) < 1:
+          continue
+        fluxes = ', '.join([r['max_flux'] for r in rows])
+        k = f'{compound_id} {fluxes}'
+        if k in result:
+          continue
         antecedent = f'{compound_id} {a}'
         consequent = ''
-        fluxes = ', '.join([r['max_flux'] for r in rows])
+        # Equal objective
+        if all(r['objective_compare'] == 'equal' for r in rows):
+          consequent = 'biomass stays the same'
         # Greater objective
-        if all(r['objective_compare'] == 'increase' for r in rows):
+        elif all(r['objective_compare'] == 'increase' for r in rows):
           consequent = 'biomass increases'
         # Greater or equal objective
         elif all(r['objective_compare'] == 'increase' or r['objective_value'] == 'equal' for r in rows):
@@ -189,9 +195,6 @@ class FBAExperimentsUtil:
         # Lesser or equal objective
         elif all(r['objective_compare'] == 'decrease' or r['objective_compare'] == 'equal' for r in rows):
           consequent = 'biomass decreases or stays the same'
-        # Equal objective
-        elif all(r['objective_compare'] == 'equal' for r in rows):
-          consequent = 'biomass stays the same'
         logging.info(f'FBAExperiments: antecedent key: {a} experiment: {i}, rows: {rows}')
         if consequent != '':
           result[k] = {'key': k, 'experiment': str(i), 'flux values': fluxes, 'if...': antecedent, 'then...': consequent}
