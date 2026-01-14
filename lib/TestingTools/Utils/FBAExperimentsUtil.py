@@ -160,9 +160,9 @@ class FBAExperimentsUtil:
   # (and not each changed compound value to each other).
   def getMetamorphicRelations(self, experiment_json, params):
     result = {}
-    for i in params['experiments']:
+    for experiment in params['experiments']:
       # Get the set of experiment results that varied the current compound
-      compound_id = params['experiments'][i]['compound_id']
+      compound_id = experiment['compound_id']
       rows = [experiment_json[key] for key in experiment_json if compound_id in key and 'base' not in key]
 
       # Split the experiment results into those that increased vs decreased the compound compared to the base media
