@@ -253,14 +253,6 @@ This sample module contains one small method that filters contigs.
 
         base_fba_ref = base_result['results'][0]['final_job_state']['result'][0]['new_fba_ref']
         base_objective = base_result['results'][0]['final_job_state']['result'][0]['objective']
-        # if base_result is not None:
-        #   output_json['Base'] = {
-        #     'compound_id': '---',
-        #     'base_max_flux': '---',
-        #     'max_flux': '---',
-        #     'base_objective_value': base_objective,
-        #     'objective_value': base_objective,
-        #   }
 
         files_to_cleanup = [base_fba_ref]
 
@@ -276,19 +268,6 @@ This sample module contains one small method that filters contigs.
             files_to_cleanup = files_to_cleanup + media_refs
 
           fluxes = fba_experiments_util.getFluxes(params, i)
-
-          # Sanity check: for each new media file, verify that it contains the correct max flux for the current compound
-          if False:
-            for i in range(0, len(media_refs)):
-              mr = media_refs[i]
-              media = file_util.readFileById(ctx, mr)
-              mediacompounds = media['data'][0]['data']['mediacompounds']
-              existing_compound = next((x for x in mediacompounds if x['compound_ref'].endswith(compound_id)), None)
-              if existing_compound is None:
-                logging.warning(f'FBAExperiments: failed to create compound {compound_id} in media {mr}')
-              max_flux = existing_compound['maxFlux']
-              expected_flux = fluxes[i]
-              logging.info(f'FBAExperiments: {compound_id} expected max flux: {expected_flux}, actual: {max_flux}')
 
           # Run flux balance analysis with the base organism and each newly created media file
           fba_tasks = fba_experiments_util.createFBATasks(media_refs, compound_id, fluxes, params)
@@ -314,14 +293,13 @@ This sample module contains one small method that filters contigs.
           logging.info(f'FBAExperiments: not deleting files {files_to_cleanup}')
 
         # Write the experimental data json to an AttributeMapping file
-        experiment_mapping_data = output_util.createFlippedAttributeMappingData(experiment_json)
-        logging.info(f'FBAExperiments: attribute mapping data: {experiment_mapping_data}')
+        experiment_mapping_data = output_util.createAttributeMappingData(experiment_json)
         experiment_output_file = file_util.writeAttributeMappingFile(experiment_mapping_data, 'fba-experiments-data')
         if experiment_output_file is not None:
           objects_created.append(experiment_output_file)
 
         # Get the set of metamorphic relations that hold based on the experimental data
-        relations = fba_experiments_util.getMetamorphicRelations(experiment_json)
+        relations = fba_experiments_util.getMetamorphicRelations(experiment_json, params)
         logging.info(f'FBAExperiments metamorphic relations: {relations}')
 
         # Build the report

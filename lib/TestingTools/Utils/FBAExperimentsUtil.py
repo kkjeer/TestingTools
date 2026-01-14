@@ -158,14 +158,19 @@ class FBAExperimentsUtil:
   # This method returns a set of metamorphic relations that hold based on the information in the given json.
   # The method works by only comparing each change to a compound to the base value of the compound
   # (and not each changed compound value to each other).
-  def getMetamorphicRelations(self, experiment_json):
+  def getMetamorphicRelations(self, experiment_json, params):
     result = {}
-    for key in experiment_json:
-      rows = [r for r in experiment_json[key] if 'base' not in r['compound_id']]
-      compound_id = rows[0]['compound_id']
+    for i in params['experiments']:
+      # Get the set of experiment results that varied the current compound
+      compound_id = params['experiments'][i]['compound_id']
+      rows = [experiment_json[key] for key in experiment_json if compound_id in key and 'base' not in key]
+
+      # Split the experiment results into those that increased vs decreased the compound compared to the base media
       increased = [r for r in rows if r['max_flux_compare'] == 'increase']
       decreased = [r for r in rows if r['max_flux_compare'] == 'decrease']
       antecedents = {'increase': increased, 'decrease': decreased}
+
+      # Determine what happened to the objective value when the compound was increased or decreased
       for a in antecedents:
         ante = antecedents[a]
         k = f'Experiment: {compound_id}'
