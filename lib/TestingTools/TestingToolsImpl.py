@@ -309,7 +309,7 @@ This sample module contains one small method that filters contigs.
           objects_created.append(relations_output_file)
 
         # Build the report
-        summary = '<p>Experimental data:</p>' + output_util.createSummary(experiment_json) + '<p>Metamorphic relations:</p>' + output_util.createSummary(relations)
+        summary = '<p><strong>Experimental data:</strong></p>' + output_util.createSummary(experiment_json) + '<br /><p><strong>Metamorphic relations:</strong></p>' + output_util.createSummary(relations)
         reportObj = {
           'objects_created': objects_created,
           'text_message': summary

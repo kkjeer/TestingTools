@@ -168,25 +168,28 @@ class FBAExperimentsUtil:
       # Split the experiment results into those that increased vs decreased the compound compared to the base media
       increased = [r for r in rows if r['max_flux_compare'] == 'increase']
       decreased = [r for r in rows if r['max_flux_compare'] == 'decrease']
-      antecedents = {'increase': increased, 'decrease': decreased}
+      antecedents = {'increases': increased, 'decreases': decreased}
 
       # Determine what happened to the objective value when the compound was increased or decreased
       for a in antecedents:
-        ante = antecedents[a]
+        ante = f'{compound_id} {a}'
         k = f'Experiment: {compound_id}'
+        consequent = ''
         # Greater objective
         if all(r['objective_compare'] == 'increase' for r in ante):
-          result[k] = {'antecedent': ante, 'consequent': 'increase objective value'}
+          consequent = 'biomass increases'
         # Greater or equal objective
         if all(r['objective_compare'] == 'increase' or r['objective_value'] == 'equal' for r in ante):
-          result[k] = {'antecedent': ante, 'consequent': 'increase or maintain objective value'}
+          consequent = 'biomass increases or stays the same'
         # Lesser objective
         elif all(r['objective_compare'] == 'decrease' for r in ante):
-          result[k] = {'antecedent': ante, 'consequent': 'decrease objective value'}
+          consequent = 'biomass decreases'
         # Lesser or equal objective
         elif all(r['objective_compare'] == 'decrease' or r['objective_compare'] == 'equal' for r in ante):
-          result[k] = {'antecedent': ante, 'consequent': 'decrease or maintain objective value'}
+          consequent = 'biomass decreases or stays the same'
         # Equal objective
         elif all(r['objective_compare'] == 'equal' for r in ante):
-          result[k] = {'antecedent': ante, 'consequent': 'no change to objective value'}
+          result[k] = 'biomass stays the same'
+        if consequent != '':
+          result[k] = {'if...': ante, 'then...': consequent}
     return result
