@@ -171,24 +171,25 @@ class FBAExperimentsUtil:
 
       # Determine what happened to the objective value when the compound was increased or decreased
       for a in antecedents:
-        ante = f'{compound_id} {a}'
         k = f'{compound_id} experiment {i}'
+        rows = antecedents[a]
+        antecedent = f'{compound_id} {a}'
         consequent = ''
         # Greater objective
-        if all(r['objective_compare'] == 'increase' for r in ante):
+        if all(r['objective_compare'] == 'increase' for r in rows):
           consequent = 'biomass increases'
         # Greater or equal objective
-        if all(r['objective_compare'] == 'increase' or r['objective_value'] == 'equal' for r in ante):
+        if all(r['objective_compare'] == 'increase' or r['objective_value'] == 'equal' for r in rows):
           consequent = 'biomass increases or stays the same'
         # Lesser objective
-        elif all(r['objective_compare'] == 'decrease' for r in ante):
+        elif all(r['objective_compare'] == 'decrease' for r in rows):
           consequent = 'biomass decreases'
         # Lesser or equal objective
-        elif all(r['objective_compare'] == 'decrease' or r['objective_compare'] == 'equal' for r in ante):
+        elif all(r['objective_compare'] == 'decrease' or r['objective_compare'] == 'equal' for r in rows):
           consequent = 'biomass decreases or stays the same'
         # Equal objective
-        elif all(r['objective_compare'] == 'equal' for r in ante):
-          result[k] = 'biomass stays the same'
+        elif all(r['objective_compare'] == 'equal' for r in rows):
+          consequent = 'biomass stays the same'
         if consequent != '':
-          result[k] = {'if...': ante, 'then...': consequent}
+          result[k] = {'if...': antecedent, 'then...': consequent}
     return result
