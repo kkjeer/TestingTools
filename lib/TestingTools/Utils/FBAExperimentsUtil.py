@@ -172,7 +172,7 @@ class FBAExperimentsUtil:
 
       # Determine what happened to the objective value when the compound was increased or decreased
       for a in antecedents:
-        k = f'{compound_id} experiment {i}'
+        k = f'{compound_id} experiment {i} antecedent {a}'
         rows = antecedents[a]
         antecedent = f'{compound_id} {a}'
         consequent = ''
@@ -192,6 +192,7 @@ class FBAExperimentsUtil:
         # Equal objective
         elif all(r['objective_compare'] == 'equal' for r in rows):
           consequent = 'biomass stays the same'
+        logging.info(f'FBAExperiments: antecedent key: {a} experiment: {i}, antecedent: {antecedent}, consequent: {consequent}')
         if consequent != '':
           result[k] = {'experiment': str(i), 'flux values': fluxes, 'if...': antecedent, 'then...': consequent}
     return result
