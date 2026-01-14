@@ -110,7 +110,7 @@ class FBAExperimentsUtil:
 
     fluxes = self.getFluxes(params, index)
     for i in range(0, len(kbparallel_result['results'])):
-      key = f'{compound_id} experiment {i}'
+      key = f'Experiment {index}: {compound_id} experiment {i}'
 
       # Get information from the fba result
       r = kbparallel_result['results'][i]['final_job_state']['result'][0]
@@ -191,5 +191,5 @@ class FBAExperimentsUtil:
         elif all(r['objective_compare'] == 'equal' for r in rows):
           consequent = 'biomass stays the same'
         if consequent != '':
-          result[k] = {'if...': antecedent, 'then...': consequent}
+          result[k] = {'experiment': k, 'if...': antecedent, 'then...': consequent}
     return result
