@@ -192,7 +192,7 @@ class FBAExperimentsUtil:
         # Equal objective
         elif all(r['objective_compare'] == 'equal' for r in rows):
           consequent = 'biomass stays the same'
-        logging.info(f'FBAExperiments: antecedent key: {a} experiment: {i}, antecedent: {antecedent}, consequent: {consequent}')
+        logging.info(f'FBAExperiments: antecedent key: {a} experiment: {i}, rows: {rows}')
         if consequent != '':
-          result[k] = {'experiment': str(i), 'flux values': fluxes, 'if...': antecedent, 'then...': consequent}
+          result[k] = {'key': k, 'experiment': str(i), 'flux values': fluxes, 'if...': antecedent, 'then...': consequent}
     return result
