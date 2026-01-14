@@ -24,7 +24,6 @@ class FBAExperimentsUtil:
       experiment = params['experiments'][i]
       compound_id = experiment['compound_id']
       existing_compound = next((x for x in mediacompounds if x['compound_ref'].endswith(compound_id)), None)
-      logging.info(f'existing compound {compound_id}: {existing_compound}')
       fluxes = self.getFluxes(params, i)
       for flux in fluxes:
         compounds_to_add = [{
@@ -97,8 +96,6 @@ class FBAExperimentsUtil:
   
   # This method creates a JSON object that contains the parameters and outputs of each FBA run.
   def createOutputJson(self, params, index, kbparallel_result, base_flux, base_objective):
-    # Sanity check
-    logging.info(f'FBAExperiments: getting output json for index: {index} out of {len(params["experiments"])} experiments')
     result = {}
     compound_id = params['experiments'][index]['compound_id']
 
@@ -160,7 +157,9 @@ class FBAExperimentsUtil:
   # (and not each changed compound value to each other).
   def getMetamorphicRelations(self, experiment_json, params):
     result = {}
-    for experiment in params['experiments']:
+    for i in range(0, len(params['experiments'])):
+      experiment = params['experiments'][i]
+      
       # Get the set of experiment results that varied the current compound
       compound_id = experiment['compound_id']
       rows = [experiment_json[key] for key in experiment_json if compound_id in key and 'base' not in key]
@@ -173,7 +172,7 @@ class FBAExperimentsUtil:
       # Determine what happened to the objective value when the compound was increased or decreased
       for a in antecedents:
         ante = f'{compound_id} {a}'
-        k = f'Experiment: {compound_id}'
+        k = f'{compound_id} experiment {i}'
         consequent = ''
         # Greater objective
         if all(r['objective_compare'] == 'increase' for r in ante):
