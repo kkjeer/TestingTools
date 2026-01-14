@@ -176,17 +176,17 @@ class FBAExperimentsUtil:
         k = f'Experiment: {compound_id}'
         # Greater objective
         if all(r['objective_compare'] == 'increase' for r in ante):
-          result[k] = {'antecedent': k, 'consequent': 'increase objective value'}
+          result[k] = {'antecedent': ante, 'consequent': 'increase objective value'}
         # Greater or equal objective
         if all(r['objective_compare'] == 'increase' or r['objective_value'] == 'equal' for r in ante):
-          result[k] = {'antecedent': k, 'consequent': 'increase or maintain objective value'}
+          result[k] = {'antecedent': ante, 'consequent': 'increase or maintain objective value'}
         # Lesser objective
         elif all(r['objective_compare'] == 'decrease' for r in ante):
-          result[k] = {'antecedent': k, 'consequent': 'decrease objective value'}
+          result[k] = {'antecedent': ante, 'consequent': 'decrease objective value'}
         # Lesser or equal objective
         elif all(r['objective_compare'] == 'decrease' or r['objective_compare'] == 'equal' for r in ante):
-          result[k] = {'antecedent': k, 'consequent': 'decrease or maintain objective value'}
+          result[k] = {'antecedent': ante, 'consequent': 'decrease or maintain objective value'}
         # Equal objective
         elif all(r['objective_compare'] == 'equal' for r in ante):
-          result[k] = {'antecedent': k, 'consequent': 'no change to objective value'}
+          result[k] = {'antecedent': ante, 'consequent': 'no change to objective value'}
     return result
