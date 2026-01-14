@@ -168,6 +168,7 @@ class FBAExperimentsUtil:
       increased = [r for r in rows if r['max_flux_compare'] == 'increase']
       decreased = [r for r in rows if r['max_flux_compare'] == 'decrease']
       antecedents = {'increases': increased, 'decreases': decreased}
+      logging.info(f'FBAExperiments: experiment {i}: compound {compound_id}: antecedents: {antecedents}')
 
       # Determine what happened to the objective value when the compound was increased or decreased
       for a in antecedents:
@@ -180,7 +181,7 @@ class FBAExperimentsUtil:
         if all(r['objective_compare'] == 'increase' for r in rows):
           consequent = 'biomass increases'
         # Greater or equal objective
-        if all(r['objective_compare'] == 'increase' or r['objective_value'] == 'equal' for r in rows):
+        elif all(r['objective_compare'] == 'increase' or r['objective_value'] == 'equal' for r in rows):
           consequent = 'biomass increases or stays the same'
         # Lesser objective
         elif all(r['objective_compare'] == 'decrease' for r in rows):
