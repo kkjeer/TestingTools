@@ -175,6 +175,7 @@ class FBAExperimentsUtil:
         rows = antecedents[a]
         antecedent = f'{compound_id} {a}'
         consequent = ''
+        fluxes = ', '.join([r['max_flux'] for r in rows])
         # Greater objective
         if all(r['objective_compare'] == 'increase' for r in rows):
           consequent = 'biomass increases'
@@ -191,5 +192,5 @@ class FBAExperimentsUtil:
         elif all(r['objective_compare'] == 'equal' for r in rows):
           consequent = 'biomass stays the same'
         if consequent != '':
-          result[k] = {'experiment': k, 'if...': antecedent, 'then...': consequent}
+          result[k] = {'experiment': str(i), 'flux values': fluxes, 'if...': antecedent, 'then...': consequent}
     return result
