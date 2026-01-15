@@ -11,6 +11,7 @@ class FBAExperimentsUtil:
     self.shared_folder = config['scratch']
     logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                         level=logging.INFO)
+    self.modelseed_compounds = self.get_modelseed_compounds()
     
   # This method returns a set of tasks for the edit_media app.
   def createEditMediaTasks(self, media, params, indices=None):
@@ -163,6 +164,7 @@ class FBAExperimentsUtil:
       
       # Get the set of experiment results that varied the current compound
       compound_id = experiment['compound_id']
+      compound_name = self.get_compound_name_by_id(compound_id)
       rows = [experiment_json[key] for key in experiment_json if compound_id in key and 'base' not in key]
 
       # Split the experiment results into those that increased vs decreased the compound compared to the base media
@@ -179,7 +181,7 @@ class FBAExperimentsUtil:
         k = f'{compound_id} {fluxes}'
         if k in result:
           continue
-        antecedent = f'{compound_id} {a}'
+        antecedent = f'{compound_id} ({compound_name}) {a}'
         consequent = ''
         # Equal objective
         if all(r['objective_compare'] == 'equal' for r in rows):
@@ -200,3 +202,30 @@ class FBAExperimentsUtil:
         if consequent != '':
           result[k] = {'flux values': fluxes, 'if...': antecedent, 'then...': consequent}
     return result
+  
+  def get_compound_name_by_id(self, id):
+    c = self.get_compound_by_id(id)
+    if c is not None:
+      return c['name']
+    return ''
+  
+  def get_compound_by_id(self, id):
+    return next((x for x in self.modelseed_compounds if x['id'] == id), None)
+  
+  # This method returns the list of ModelSEED compounds from GitHub.
+  # This list links compound information (id, name, formula, etc.) together.
+  def get_modelseed_compounds(self):
+    print(f'getting model seed compounds')
+    obj = self.read_remote_file('https://raw.githubusercontent.com/ModelSEED/ModelSEEDDatabase/refs/tags/v1.0/Biochemistry/compounds.json')
+    if obj is not None:
+      return obj
+    return {}
+  
+  # This method reads a file located at the given url and returns the contents (if able) as a JSON object.
+  def read_remote_file(self, url):
+    req = requests.get(url)
+    if req.status_code == requests.codes.ok:
+      obj = req.json()
+      return obj
+    else:
+      return None
