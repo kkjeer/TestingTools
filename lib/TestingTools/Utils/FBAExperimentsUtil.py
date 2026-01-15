@@ -197,5 +197,5 @@ class FBAExperimentsUtil:
           consequent = 'biomass decreases or stays the same'
         logging.info(f'FBAExperiments: antecedent key: {a} experiment: {i}, rows: {rows}')
         if consequent != '':
-          result[k] = {'key': k, 'experiment': str(i), 'flux values': fluxes, 'if...': antecedent, 'then...': consequent}
+          result[k] = {'flux values': fluxes, 'if...': antecedent, 'then...': consequent}
     return result

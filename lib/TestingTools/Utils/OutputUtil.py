@@ -86,7 +86,7 @@ class OutputUtil:
 
       # Define the style of each column
       bg = "#f4f4f4" if i % 2 == 1 else "transparent"
-      style = f'style="padding: 5px; background-color: {bg};"'
+      style = f'style="padding: 5px 8px; background-color: {bg};"'
 
       # Add the value for each column
       for col in output_json[row]:
