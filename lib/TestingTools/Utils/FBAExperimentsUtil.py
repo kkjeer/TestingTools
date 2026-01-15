@@ -1,5 +1,6 @@
 import logging
 import os
+import requests
 
 # This class contains utilities for the FBAExperiments app.
 class FBAExperimentsUtil:
