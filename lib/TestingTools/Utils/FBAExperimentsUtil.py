@@ -1,6 +1,6 @@
 import logging
 import os
-import requests
+import requests # pyright: ignore[reportMissingModuleSource]
 
 # This class contains utilities for the FBAExperiments app.
 class FBAExperimentsUtil:
@@ -100,9 +100,10 @@ class FBAExperimentsUtil:
   def createOutputJson(self, params, index, kbparallel_result, base_flux, base_objective):
     result = {}
     compound_id = params['experiments'][index]['compound_id']
+    compound_name = self.get_compound_name_by_id(compound_id)
 
     base_obj = {
-      'compound_id': compound_id + '-base',
+      'compound_id': f'{compound_id} ({compound_name}) -base',
       'max_flux': base_flux,
       'objective_value': base_objective,
       'max_flux_compare': '---',
@@ -112,7 +113,7 @@ class FBAExperimentsUtil:
 
     fluxes = self.getFluxes(params, index)
     for i in range(0, len(kbparallel_result['results'])):
-      key = f'Experiment {index}: {compound_id} experiment {i}'
+      key = f'Experiment {index}: {compound_id} variation {i}'
 
       # Get information from the fba result
       r = kbparallel_result['results'][i]['final_job_state']['result'][0]
@@ -122,7 +123,7 @@ class FBAExperimentsUtil:
       objective_compare = self.compareNumbers(base_objective, objective)
 
       obj = {}
-      obj['compound_id'] = compound_id
+      obj['compound_id'] = f'{compound_id} ({compound_name})'
       obj['max_flux'] = str(fluxes[i])
       obj['objective_value'] = str(objective)
       obj['max_flux_compare'] = max_flux_compare
