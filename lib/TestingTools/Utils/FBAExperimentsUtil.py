@@ -103,7 +103,7 @@ class FBAExperimentsUtil:
     compound_name = self.get_compound_name_by_id(compound_id)
 
     base_obj = {
-      'compound_id': f'{compound_id} ({compound_name}) -base',
+      'compound_id': f'{compound_name} (base)',
       'max_flux': base_flux,
       'objective_value': base_objective,
       'max_flux_compare': '---',
@@ -182,7 +182,7 @@ class FBAExperimentsUtil:
         k = f'{compound_id} {fluxes}'
         if k in result:
           continue
-        antecedent = f'{compound_id} ({compound_name}) {a}'
+        antecedent = f'{compound_name} {a}'
         consequent = ''
         # Equal objective
         if all(r['objective_compare'] == 'equal' for r in rows):
