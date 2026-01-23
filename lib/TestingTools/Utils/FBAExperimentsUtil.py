@@ -123,7 +123,7 @@ class FBAExperimentsUtil:
       objective_compare = self.compareNumbers(base_objective, objective)
 
       obj = {}
-      obj['compound_id'] = f'{compound_id} ({compound_name})'
+      obj['compound_id'] = f'{compound_name}'
       obj['max_flux'] = str(fluxes[i])
       obj['objective_value'] = str(objective)
       obj['max_flux_compare'] = max_flux_compare
