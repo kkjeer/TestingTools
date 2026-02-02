@@ -332,6 +332,50 @@ This sample module contains one small method that filters contigs.
         # return the results
         return [output]
     
+    def run_MetamorphicFeedback(self, ctx, params):
+        """
+        This example function accepts any number of parameters and returns results in a KBaseReport
+        :param params: instance of mapping from String to unspecified object
+        :returns: instance of type "ReportResults" -> structure: parameter
+           "report_name" of String, parameter "report_ref" of String
+        """
+        # ctx is the context object
+        # return variables are: output
+        #BEGIN run_MetamorphicFeedback
+
+        # Print statements to stdout/stderr are captured and available as the App log
+        logging.info('Starting run_MetamorphicFeedback function. Params=' + pformat(params))
+
+        # Create utilities
+        test_feedback_util = TestFeedbackUtil(self.config)
+        input_util = InputUtil(self.config)
+        output_util = OutputUtil(self.config)
+        file_util = FileUtil(self.config, ctx, params)
+
+        # Read the input file (output file of an experiments app)
+        input_file = file_util.readFileById(ctx, params['mapping_id'])
+        experiments_output = input_util.getFlippedAttributeMappingOutputAsJson(input_file)
+        logging.info(f'MetamorphicFeedback: explorer output: {experiments_output}')
+
+        # Build the report
+        summary = 'Done running Metamorphic Feedback'
+        reportObj = {
+          'objects_created': [],
+          'text_message': summary
+        }
+        report = KBaseReport(self.callback_url)
+        report_info = report.create({'report': reportObj, 'workspace_name': params['workspace_name']})
+
+        # Construct output
+        output = {'report_name': report_info['name'],
+                  'report_ref': report_info['ref']
+                  }
+                
+        #END run_MetamorphicFeedback
+
+        # return the results
+        return [output]
+    
     def status(self, ctx):
         #BEGIN_STATUS
         returnVal = {'state': "OK",

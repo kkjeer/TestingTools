@@ -1,0 +1,125 @@
+{
+  "ver": "0.0.1",
+  "authors": ["kkjeer"],
+  "contact": "https://kbase.us/contact-us/",
+  "categories": ["active"],
+  "widgets": { "input": null, "output": "no-display" },
+  "parameters": [
+    {
+      "id": "mapping_id",
+      "optional": false,
+      "advanced": false,
+      "allow_multiple": false,
+      "default_values": [""],
+      "field_type": "text",
+      "text_options": {
+        "valid_ws_types": ["KBaseExperiments.AttributeMapping"]
+      }
+    },
+    {
+      "id": "run_id",
+      "field_type": "textsubdata",
+      "allow_multiple": false,
+      "optional": false,
+      "advanced": false,
+      "default_values": [""],
+      "text_options": { "valid_ws_types": [] },
+      "textsubdata_options": {
+        "show_src_obj": true,
+        "allow_custom": true,
+        "multiselection": false,
+        "subdata_selection": {
+          "additional_options": [],
+          "subdata_included": [
+            "attributes/[*]/attribute",
+            "attributes/[*]/unit"
+          ],
+          "selection_description": ["attribute", "unit"],
+          "description_template": "run id: {{attribute}}, objective value: {{unit}}",
+          "selection_id": "attribute",
+          "path_to_subdata": ["attributes"],
+          "parameter_id": "mapping_id"
+        }
+      }
+    },
+    {
+      "id": "feedback",
+      "optional": false,
+      "allow_multiple": false,
+      "default_values": ["unknown"],
+      "field_type": "dropdown",
+      "dropdown_options": {
+        "options": [
+          {
+            "value": "unknown",
+            "display": "Unknown",
+            "id": "unknown",
+            "ui_name": "Unknown"
+          },
+          {
+            "value": "correct",
+            "display": "Correct",
+            "id": "correct",
+            "ui_name": "Correct"
+          },
+          {
+            "value": "incorrect",
+            "display": "Incorrect",
+            "id": "incorrect",
+            "ui_name": "Incorrect"
+          }
+        ]
+      }
+    }
+  ],
+  "parameter-groups": [
+    {
+      "id": "param_group",
+      "parameters": ["run_id", "feedback"],
+      "optional": false,
+      "allow_multiple": true,
+      "with_border": true
+    }
+  ],
+  "behavior": {
+    "service-mapping": {
+      "url": "",
+      "name": "TestingTools",
+      "method": "run_MetamorphicFeedback",
+      "input_mapping": [
+        {
+          "narrative_system_variable": "workspace",
+          "target_property": "workspace_name"
+        },
+        {
+          "narrative_system_variable": "workspace_id",
+          "target_property": "workspace_id"
+        },
+        {
+          "input_parameter": "mapping_id",
+          "target_property": "mapping_id",
+          "target_type_transform": "resolved-ref"
+        },
+        {
+          "input_parameter": "param_group",
+          "target_property": "param_group"
+        }
+      ],
+      "output_mapping": [
+        {
+          "service_method_output_path": [0, "report_name"],
+          "target_property": "report_name"
+        },
+        {
+          "service_method_output_path": [0, "report_ref"],
+          "target_property": "report_ref"
+        },
+        {
+          "narrative_system_variable": "workspace",
+          "target_property": "workspace_name"
+        }
+      ]
+    }
+  },
+  "job_id_output_field": "docker"
+}
