@@ -35,7 +35,7 @@
             "attributes/[*]/unit"
           ],
           "selection_description": ["attribute", "unit"],
-          "description_template": "run id: {{attribute}}, objective value: {{unit}}",
+          "description_template": "{{unit}}",
           "selection_id": "attribute",
           "path_to_subdata": ["attributes"],
           "parameter_id": "mapping_id"
@@ -70,12 +70,41 @@
           }
         ]
       }
+    },
+    {
+      "id": "expected_effect",
+      "optional": false,
+      "allow_multiple": false,
+      "default_values": ["n/a"],
+      "field_type": "dropdown",
+      "dropdown_options": {
+        "options": [
+          {
+            "value": "n/a",
+            "display": "N/A (relation is correct or unknown)",
+            "id": "n/a",
+            "ui_name": "N/A (relation is correct or unknown)"
+          },
+          {
+            "value": "increase",
+            "display": "Increase",
+            "id": "increase",
+            "ui_name": "Increase"
+          },
+          {
+            "value": "increase or stay the same",
+            "display": "Increase or stay the same",
+            "id": "increase or stay the same",
+            "ui_name": "Increase or stay the same"
+          }
+        ]
+      }
     }
   ],
   "parameter-groups": [
     {
       "id": "param_group",
-      "parameters": ["run_id", "feedback"],
+      "parameters": ["run_id", "feedback", "expected_effect"],
       "optional": false,
       "allow_multiple": true,
       "with_border": true

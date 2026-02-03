@@ -355,7 +355,7 @@ This sample module contains one small method that filters contigs.
         # Read the input file (output file of an experiments app)
         input_file = file_util.readFileById(ctx, params['mapping_id'])
         experiments_output = input_util.getFlippedAttributeMappingOutputAsJson(input_file)
-        logging.info(f'MetamorphicFeedback: explorer output: {experiments_output}')
+        logging.info(f'MetamorphicFeedback: experiments output: {experiments_output}')
 
         # Build the report
         summary = 'Done running Metamorphic Feedback'
