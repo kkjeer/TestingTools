@@ -33,7 +33,7 @@ class OutputUtil:
   
   # This method creates data to populate an AttributeMapping file.
   # The data is "flipped" - it uses the "column" keys of the json as the rows and the "row" keys as columns.
-  def createFlippedAttributeMappingData(self, output_json):
+  def createFlippedAttributeMappingData(self, output_json, unit_key='objective_value'):
     rows = list(output_json.keys())
     cols = list(output_json[rows[0]].keys())
     instances = {}
@@ -43,7 +43,7 @@ class OutputUtil:
       'attributes': [
         {'attribute': row, 
          'source': 'upload', 
-         'unit': output_json[row]['objective_value'], 
+         'unit': output_json[row][unit_key], 
         } for row in rows],
       'instances': instances,
       'ontology_mapping_method': 'User curation'

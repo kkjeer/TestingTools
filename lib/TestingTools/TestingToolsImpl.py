@@ -303,10 +303,11 @@ This sample module contains one small method that filters contigs.
         logging.info(f'FBAExperiments metamorphic relations: {relations}')
 
         # Write the metamorphic relations to an AttributeMapping file
-        relations_mapping_data = output_util.createFlippedAttributeMappingData(relations)
-        relations_output_file = file_util.writeAttributeMappingFile(relations_mapping_data, 'fba-metamorphic-relations')
-        if relations_output_file is not None:
-          objects_created.append(relations_output_file)
+        if False:
+          relations_mapping_data = output_util.createFlippedAttributeMappingData(relations)
+          relations_output_file = file_util.writeAttributeMappingFile(relations_mapping_data, 'fba-metamorphic-relations')
+          if relations_output_file is not None:
+            objects_created.append(relations_output_file)
 
         # Build the report
         summary = '<p><strong>Experimental data:</strong></p>' + output_util.createSummary(experiment_json) + '<br /><p><strong>Metamorphic relations:</strong></p>' + output_util.createSummary(relations)
