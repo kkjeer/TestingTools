@@ -24,7 +24,7 @@ parameters:
       Metamorphic relations
     short-hint: |
       AttributeMapping output by an experiments app (e.g. FBA Experiments) containing inferred metamorphic relations
-  run_id:
+  relation_id:
     ui-name: |
       Relation
     short-hint: |
