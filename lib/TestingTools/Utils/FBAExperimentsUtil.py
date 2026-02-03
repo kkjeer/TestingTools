@@ -25,6 +25,7 @@ class FBAExperimentsUtil:
     for i in indices:
       experiment = params['experiments'][i]
       compound_id = experiment['compound_id']
+      compound_name = self.get_compound_name_by_id(compound_id)
       existing_compound = next((x for x in mediacompounds if x['compound_ref'].endswith(compound_id)), None)
       fluxes = self.getFluxes(params, i)
       for flux in fluxes:
@@ -46,7 +47,7 @@ class FBAExperimentsUtil:
           'version': 'release',
           'parameters': {
             'media_id': params['media_id'],
-            'media_output_id': f'fba-experiments-media-{compound_id}-{flux}',
+            'media_output_id': f'fba-experiments-media-{compound_name}-flux-{flux}',
             'compounds_to_add': compounds_to_add,
             'compounds_to_change': compounds_to_change,
             'compounds_to_remove': [],
@@ -78,13 +79,14 @@ class FBAExperimentsUtil:
     if media_refs is None:
       logging.warning('media_refs is None - cannot create FBA tasks')
       return None
+    compound_name = self.get_compound_name_by_id(compound_id)
     tasks = [
       {
         'module_name': 'fba_tools',
         'function_name': 'run_flux_balance_analysis',
         'version': 'release',
         'parameters': {
-          'fba_output_id': f'fba-experiment-output-{compound_id}-{fluxes[i]}',
+          'fba_output_id': f'fba-experiment-output-{compound_name}-flux-{fluxes[i]}',
           'target_reaction': 'bio1',
           'fbamodel_id': params['fbamodel_id'],
           'media_id': media_refs[i],
@@ -179,7 +181,7 @@ class FBAExperimentsUtil:
         if len(rows) < 1:
           continue
         fluxes = ', '.join([r['max_flux'] for r in rows])
-        k = f'{compound_id} {fluxes}'
+        k = f'{compound_name} (fluxes {fluxes})'
         if k in result:
           continue
         antecedent = f'{compound_name} {a}'
@@ -199,17 +201,18 @@ class FBAExperimentsUtil:
         # Lesser or equal objective
         elif all(r['objective_compare'] == 'decrease' or r['objective_compare'] == 'equal' for r in rows):
           consequent = 'biomass decreases or stays the same'
-        logging.info(f'FBAExperiments: antecedent key: {a} experiment: {i}, rows: {rows}')
         if consequent != '':
           result[k] = {'flux values': fluxes, 'if...': antecedent, 'then...': consequent}
     return result
   
+  # This method returns the display name of the compound with the given id.
   def get_compound_name_by_id(self, id):
     c = self.get_compound_by_id(id)
-    if c is not None:
+    if c is not None and 'name' in c:
       return c['name']
-    return ''
+    return id
   
+  # This method returns the compound with the given id (if said compound exists)
   def get_compound_by_id(self, id):
     return next((x for x in self.modelseed_compounds if x['id'] == id), None)
   
