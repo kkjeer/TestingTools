@@ -17,7 +17,7 @@
       }
     },
     {
-      "id": "run_id",
+      "id": "relation_id",
       "field_type": "textsubdata",
       "allow_multiple": false,
       "optional": false,
@@ -96,6 +96,24 @@
             "display": "Increase or stay the same",
             "id": "increase or stay the same",
             "ui_name": "Increase or stay the same"
+          },
+          {
+            "value": "decrease",
+            "display": "Decrease",
+            "id": "decrease",
+            "ui_name": "Decrease"
+          },
+          {
+            "value": "decrease or stay the same",
+            "display": "Decrease or stay the same",
+            "id": "Decrease or stay the same",
+            "ui_name": "Decrease or stay the same"
+          },
+          {
+            "value": "stay the same",
+            "display": "Stay the same",
+            "id": "stay the same",
+            "ui_name": "Stay the same"
           }
         ]
       }
@@ -104,7 +122,7 @@
   "parameter-groups": [
     {
       "id": "param_group",
-      "parameters": ["run_id", "feedback", "expected_effect"],
+      "parameters": ["relation_id", "feedback", "expected_effect"],
       "optional": false,
       "allow_multiple": true,
       "with_border": true

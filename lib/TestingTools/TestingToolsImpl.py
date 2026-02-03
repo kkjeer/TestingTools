@@ -9,6 +9,7 @@ from Utils.AppExplorerUtil import AppExplorerUtil
 from Utils.FBAExplorerUtil import FBAExplorerUtil
 from Utils.TestFeedbackUtil import TestFeedbackUtil
 from Utils.FBAExperimentsUtil import FBAExperimentsUtil
+from Utils.MetamorphicFeedbackUtil import MetamorphicFeedbackUtil
 from Utils.OutputUtil import OutputUtil
 from Utils.InputUtil import InputUtil
 from Utils.FileUtil import FileUtil
@@ -347,20 +348,31 @@ This sample module contains one small method that filters contigs.
         logging.info('Starting run_MetamorphicFeedback function. Params=' + pformat(params))
 
         # Create utilities
-        test_feedback_util = TestFeedbackUtil(self.config)
+        metamorphic_feedback_util = MetamorphicFeedbackUtil(self.config)
         input_util = InputUtil(self.config)
         output_util = OutputUtil(self.config)
         file_util = FileUtil(self.config, ctx, params)
 
-        # Read the input file (output file of an experiments app)
+        # Read the input file (output file of a metamorphic relation inference app)
         input_file = file_util.readFileById(ctx, params['mapping_id'])
-        experiments_output = input_util.getFlippedAttributeMappingOutputAsJson(input_file)
-        logging.info(f'MetamorphicFeedback: experiments output: {experiments_output}')
+        relations_output = input_util.getFlippedAttributeMappingOutputAsJson(input_file)
+        logging.info(f'MetamorphicFeedback: relations output: {relations_output}')
+
+        # Add the feedback to the FBA results
+        results_with_feedback = metamorphic_feedback_util.addFeedbackToRelationsOutput(relations_output, params['param_group'])
+        logging.info(f'MetamorphicFeedback: results with feedback: {results_with_feedback}')
+
+        # Save the annotated results (with feedback) to an output file
+        objects_created = []
+        mapping_data = output_util.createAttributeMappingData(results_with_feedback)
+        output_file = file_util.writeAttributeMappingFile(mapping_data, 'metamorphic-feedback-results')
+        if output_file is not None:
+          objects_created.append(output_file)
 
         # Build the report
-        summary = 'Done running Metamorphic Feedback'
+        summary = output_util.createSummary(results_with_feedback)
         reportObj = {
-          'objects_created': [],
+          'objects_created': objects_created,
           'text_message': summary
         }
         report = KBaseReport(self.callback_url)

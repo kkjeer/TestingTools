@@ -37,7 +37,6 @@ class InputUtil:
       return None
     result = {}
     data = mappings['data'][0]['data']
-    logging.info(f'mappings data: {json.dumps(data, indent=2)}')
 
     for i in range(0, len(data['attributes'])):
       r = data['attributes'][i]['attribute']
