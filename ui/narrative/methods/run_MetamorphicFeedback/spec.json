@@ -117,12 +117,25 @@
           }
         ]
       }
+    },
+    {
+      "id": "explanation",
+      "optional": true,
+      "field_type": "textarea",
+      "textarea_options": {
+        "n_rows": 4
+      }
     }
   ],
   "parameter-groups": [
     {
       "id": "param_group",
-      "parameters": ["relation_id", "feedback", "expected_effect"],
+      "parameters": [
+        "relation_id",
+        "feedback",
+        "expected_effect",
+        "explanation"
+      ],
       "optional": false,
       "allow_multiple": true,
       "with_border": true

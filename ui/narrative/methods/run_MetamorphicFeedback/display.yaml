@@ -39,6 +39,11 @@ parameters:
       Expected effect on biomass
     short-hint: |
       If the metamorphic relation is incorrect, specify what should happen to the biomass if the relevant compound is increased or decreased
+  explanation:
+    ui-name: |
+      Explanation
+    short-hint: |
+      If the metamorphic relation is incorrect, briefly explain why
 
 parameter-groups:
   param_group:

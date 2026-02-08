@@ -26,7 +26,8 @@ class MetamorphicFeedbackUtil:
         result[r] = {
           **output_json[r],
           'feedback': category['feedback'],
-          'expected_effect': str(category['expected_effect'])
+          'expected_effect': str(category['expected_effect']),
+          'explanation': str(category['explanation'])
         }
 
     return result
