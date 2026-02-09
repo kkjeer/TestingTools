@@ -37,4 +37,4 @@ class MetamorphicFeedbackUtil:
       relation_id = categories[i]['relation_id'][0]
       if relation_id == relation:
         return categories[i]
-    return {'feedback': 'unknown', 'expected_effect': None}
+    return {'feedback': 'unknown', 'expected_effect': 'N/A', 'explanation': ''}
