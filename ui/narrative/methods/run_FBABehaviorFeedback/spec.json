@@ -145,7 +145,7 @@
     "service-mapping": {
       "url": "",
       "name": "TestingTools",
-      "method": "run_MetamorphicFeedback",
+      "method": "run_FBABehaviorFeedback",
       "input_mapping": [
         {
           "narrative_system_variable": "workspace",

@@ -9,7 +9,7 @@ from Utils.AppExplorerUtil import AppExplorerUtil
 from Utils.FBAExplorerUtil import FBAExplorerUtil
 from Utils.TestFeedbackUtil import TestFeedbackUtil
 from Utils.FBAExperimentsUtil import FBAExperimentsUtil
-from Utils.MetamorphicFeedbackUtil import MetamorphicFeedbackUtil
+from Utils.FBABehaviorFeedbackUtil import FBABehaviorFeedbackUtil
 from Utils.OutputUtil import OutputUtil
 from Utils.InputUtil import InputUtil
 from Utils.FileUtil import FileUtil
@@ -333,7 +333,7 @@ This sample module contains one small method that filters contigs.
         # return the results
         return [output]
     
-    def run_MetamorphicFeedback(self, ctx, params):
+    def run_FBABehaviorFeedback(self, ctx, params):
         """
         This example function accepts any number of parameters and returns results in a KBaseReport
         :param params: instance of mapping from String to unspecified object
@@ -342,13 +342,13 @@ This sample module contains one small method that filters contigs.
         """
         # ctx is the context object
         # return variables are: output
-        #BEGIN run_MetamorphicFeedback
+        #BEGIN run_FBABehaviorFeedback
 
         # Print statements to stdout/stderr are captured and available as the App log
-        logging.info('Starting run_MetamorphicFeedback function. Params=' + pformat(params))
+        logging.info('Starting run_FBABehaviorFeedback function. Params=' + pformat(params))
 
         # Create utilities
-        metamorphic_feedback_util = MetamorphicFeedbackUtil(self.config)
+        metamorphic_feedback_util = FBABehaviorFeedbackUtil(self.config)
         input_util = InputUtil(self.config)
         output_util = OutputUtil(self.config)
         file_util = FileUtil(self.config, ctx, params)
@@ -356,11 +356,11 @@ This sample module contains one small method that filters contigs.
         # Read the input file (output file of a metamorphic relation inference app)
         input_file = file_util.readFileById(ctx, params['mapping_id'])
         relations_output = input_util.getFlippedAttributeMappingOutputAsJson(input_file)
-        logging.info(f'MetamorphicFeedback: relations output: {relations_output}')
+        logging.info(f'FBABehaviorFeedback: relations output: {relations_output}')
 
         # Add the feedback to the FBA results
         results_with_feedback = metamorphic_feedback_util.addFeedbackToRelationsOutput(relations_output, params['param_group'])
-        logging.info(f'MetamorphicFeedback: results with feedback: {results_with_feedback}')
+        logging.info(f'FBABehaviorFeedback: results with feedback: {results_with_feedback}')
 
         # Save the annotated results (with feedback) to an output file
         objects_created = []
@@ -383,7 +383,7 @@ This sample module contains one small method that filters contigs.
                   'report_ref': report_info['ref']
                   }
                 
-        #END run_MetamorphicFeedback
+        #END run_FBABehaviorFeedback
 
         # return the results
         return [output]

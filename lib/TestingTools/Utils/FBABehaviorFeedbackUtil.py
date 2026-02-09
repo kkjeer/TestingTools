@@ -2,7 +2,7 @@ import logging
 import os
 
 # This class is responsible for manipulating data from inferred metamorphic relations and user-provided feedback.
-class MetamorphicFeedbackUtil:
+class FBABehaviorFeedbackUtil:
   def __init__(self, config):
     self.config = config
     self.callback_url = os.environ['SDK_CALLBACK_URL']

@@ -1,7 +1,7 @@
 #
 # define display information
 #
-name: Metamorphic Feedback
+name: FBA Behavior Feedback
 tooltip: |
   Provide feedback on metamorphic relations obtained by running another KBase app
 screenshots: []
