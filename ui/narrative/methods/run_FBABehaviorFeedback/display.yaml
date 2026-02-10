@@ -26,7 +26,7 @@ parameters:
       AttributeMapping output by an experiments app (e.g. FBA Experiments) containing inferred FBA behavior
   relation_id:
     ui-name: |
-      Relation
+      Behavior
     short-hint: |
       Name of the behavior to categorize
   feedback:

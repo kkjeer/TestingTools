@@ -26,7 +26,7 @@ class FBABehaviorFeedbackUtil:
         result[r] = {
           **output_json[r],
           'feedback': category['feedback'],
-          'expected_effect': str(category['expected_effect']),
+          'expected effect': str(category['expected_effect']),
           'explanation': str(category['explanation'])
         }
 
@@ -37,4 +37,4 @@ class FBABehaviorFeedbackUtil:
       relation_id = categories[i]['relation_id'][0]
       if relation_id == relation:
         return categories[i]
-    return {'feedback': 'unknown', 'expected_effect': 'N/A', 'explanation': ''}
+    return {'feedback': 'unknown', 'expected effect': 'N/A', 'explanation': ''}
