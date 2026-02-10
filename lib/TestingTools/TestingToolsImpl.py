@@ -365,7 +365,7 @@ This sample module contains one small method that filters contigs.
         # Save the annotated results (with feedback) to an output file
         objects_created = []
         mapping_data = output_util.createAttributeMappingData(results_with_feedback)
-        output_file = file_util.writeAttributeMappingFile(mapping_data, 'metamorphic-feedback-results')
+        output_file = file_util.writeAttributeMappingFile(mapping_data, 'fba-behavior-feedback')
         if output_file is not None:
           objects_created.append(output_file)
 
