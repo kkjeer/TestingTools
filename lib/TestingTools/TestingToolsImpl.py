@@ -250,7 +250,12 @@ This sample module contains one small method that filters contigs.
               'max_s_uptake': '',
               'max_o_uptake': '',
               'default_max_uptake': '',
-              'workspace': params['workspace_name']
+              'media_supplement_list': '',
+              'reaction_ko_list': '',
+              'feature_ko_list': '',
+              'custom_bound_list': '',
+              'workspace': params['workspace_name'],
+              'fbamodel_workspace': params['workspace_name']
             }
           }
         ]
