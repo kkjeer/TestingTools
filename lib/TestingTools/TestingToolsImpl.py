@@ -233,9 +233,17 @@ This sample module contains one small method that filters contigs.
             'version': 'beta',
             'parameters': {
               'fba_output_id': 'cobrapy-test-output',
-              # 'target_reaction': 'bio1',
+              'target_reaction': 'bio1',
               'fbamodel_id': params['fbamodel_id'],
               'media_id': params['media_id'],
+              'fba_type': 'pFBA',
+              'fva_type': 'FVA',
+              'solver': 'glpk',
+              'minimize_objective': '0',
+              'fraction_of_optimum_pfba': '1.0',
+              'fraction_of_optimum_fva': '0.1',
+              'simulate_ko': '0',
+              'all_reversible': '0',
               'workspace': params['workspace_name']
             }
           }
