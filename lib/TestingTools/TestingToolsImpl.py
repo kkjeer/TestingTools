@@ -244,6 +244,12 @@ This sample module contains one small method that filters contigs.
               'fraction_of_optimum_fva': '0.1',
               'simulate_ko': '0',
               'all_reversible': '0',
+              'max_c_uptake': '',
+              'max_n_uptake': '',
+              'max_p_uptake': '',
+              'max_s_uptake': '',
+              'max_o_uptake': '',
+              'default_max_uptake': '',
               'workspace': params['workspace_name']
             }
           }
