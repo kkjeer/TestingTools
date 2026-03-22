@@ -347,6 +347,24 @@ This sample module contains one small method that filters contigs.
         # Print statements to stdout/stderr are captured and available as the App log
         logging.info('Starting run_FBABehaviorFeedback function. Params=' + pformat(params))
 
+        test_cobrapy_tasks = [
+           {
+            'module_name': 'COBRApyBasedFBA',
+            'function_name': 'run_fba_pipeline',
+            'version': 'beta',
+            'parameters': {
+              'fba_output_id': 'cobrapy-test-output',
+              # 'target_reaction': 'bio1',
+              'fbamodel_id': params['fbamodel_id'],
+              'media_id': params['media_id'],
+              'workspace': params['workspace_name']
+            }
+          }
+        ]
+        appexplorer_util = AppExplorerUtil(self.config)
+        test_cobrapy_result = appexplorer_util.runKBParallel(test_cobrapy_tasks)
+        logging.info(f'cobrapy result: {test_cobrapy_result}')
+
         # Create utilities
         metamorphic_feedback_util = FBABehaviorFeedbackUtil(self.config)
         input_util = InputUtil(self.config)
