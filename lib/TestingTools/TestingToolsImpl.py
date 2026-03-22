@@ -361,9 +361,27 @@ This sample module contains one small method that filters contigs.
             }
           }
         ]
+        logging.info(f'cobrapy tasks: {test_cobrapy_tasks}')
         appexplorer_util = AppExplorerUtil(self.config)
         test_cobrapy_result = appexplorer_util.runKBParallel(test_cobrapy_tasks)
         logging.info(f'cobrapy result: {test_cobrapy_result}')
+
+        # Build the report
+        summary = f'tried to run cobrapy fba app'
+        reportObj = {
+          'objects_created': [],
+          'text_message': summary
+        }
+        report = KBaseReport(self.callback_url)
+        report_info = report.create({'report': reportObj, 'workspace_name': params['workspace_name']})
+
+        # Construct output
+        output = {'report_name': report_info['name'],
+                  'report_ref': report_info['ref']
+                  }
+
+        # return the results
+        return [output]
 
         # Create utilities
         metamorphic_feedback_util = FBABehaviorFeedbackUtil(self.config)
