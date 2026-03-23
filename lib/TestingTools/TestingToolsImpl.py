@@ -249,7 +249,7 @@ This sample module contains one small method that filters contigs.
               'max_p_uptake': '',
               'max_s_uptake': '',
               'max_o_uptake': '',
-              'default_max_uptake': '0',
+              'default_max_uptake': 0,
               'media_supplement_list': '',
               'reaction_ko_list': '',
               'feature_ko_list': '',
