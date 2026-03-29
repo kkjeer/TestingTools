@@ -298,6 +298,30 @@ This sample module contains one small method that filters contigs.
 
         base_results = app_explorer_util.extractResults(base_result)
         logging.info(f'base_results: {base_results}')
+
+        # Build the report
+        summary = f'<p>extract base results: {base_results}</p>'
+        reportObj = {
+          'objects_created': objects_created,
+          'text_message': summary
+        }
+        report = KBaseReport(self.callback_url)
+        report_info = report.create({'report': reportObj, 'workspace_name': params['workspace_name']})
+
+        # Construct output
+        output = {'report_name': report_info['name'],
+                  'report_ref': report_info['ref']
+                  }
+        logging.info('returning:' + pformat(output))
+        return [output]
+    
+        if base_result['results'] is None or base_result['results'][0] is None or base_result['results'][0]['final_job_state'] is None or base_result['results'][0]['final_job_state']['result'] is None or base_result['results'][0]['final_job_state']['result'][0] is None:
+          raise ValueError('FBAExperiments: base experiment failed')
+        logging.info(f'base result: {base_result['results'][0]['final_job_state']['result'][0]}')
+        if 'new_fba_ref' not in base_result['results'][0]['final_job_state']['result'][0]:
+          raise ValueError(f'new_fba_ref not in base result')
+        if 'objective' not in base_result['results'][0]['final_job_state']['result'][0]:
+          raise ValueError(f'objective not in base result')
         base_fba_ref = base_result['results'][0]['final_job_state']['result'][0]['new_fba_ref']
         base_objective = base_result['results'][0]['final_job_state']['result'][0]['objective']
 
