@@ -66,7 +66,7 @@ parameters:
     ui-name: |
       Use COBRApy app
     short-hint: |
-      If checked, this app will run the COBRApyBasedFBA app during each experiment.
+      If checked, this app will run the COBRApyBasedFBA app during each experiment; otherwise the fba_tools app will be run.
 
   cleanup:
     ui-name: |

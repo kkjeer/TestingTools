@@ -76,7 +76,7 @@ class FBAExperimentsUtil:
   
   def createFBABaseTask(self, params):
     if params['cobrapy']:
-      return self.createCobraPyFBATasks(params)
+      return self.createCobraPyFBABaseTask(params)
     base_task = {
       'module_name': 'fba_tools',
       'function_name': 'run_flux_balance_analysis',
@@ -91,7 +91,7 @@ class FBAExperimentsUtil:
     }
     return base_task
   
-  def createFBACobraPyBaseTask(self, params):
+  def createCobraPyFBABaseTask(self, params):
     base_task = {
       'module_name': 'COBRApyBasedFBA',
       'function_name': 'run_fba_pipeline',
