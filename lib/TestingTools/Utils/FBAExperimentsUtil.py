@@ -74,12 +74,65 @@ class FBAExperimentsUtil:
       media_refs.append(new_media_ref)
     return media_refs
   
+  def createFBABaseTask(self, params):
+    if params['cobrapy']:
+      return self.createCobraPyFBATasks(params)
+    base_task = {
+      'module_name': 'fba_tools',
+      'function_name': 'run_flux_balance_analysis',
+      'version': 'release',
+      'parameters': {
+        'fba_output_id': f'fba-experiment-output-base',
+        'target_reaction': 'bio1',
+        'fbamodel_id': params['fbamodel_id'],
+        'media_id': params['media_id'],
+        'workspace': params['workspace_name']
+      }
+    }
+    return base_task
+  
+  def createFBACobraPyBaseTask(self, params):
+    base_task = {
+      'module_name': 'COBRApyBasedFBA',
+      'function_name': 'run_fba_pipeline',
+      'version': 'beta',
+      'parameters': {
+        'fba_output_id': 'fba-experiment-cobrapy-output-base',
+        'target_reaction': 'bio1',
+        'fbamodel_id': params['fbamodel_id'],
+        'media_id': params['media_id'],
+        'fba_type': 'pFBA',
+        'fva_type': 'FVA',
+        'solver': 'glpk',
+        'minimize_objective': '0',
+        'fraction_of_optimum_pfba': 1.0,
+        'fraction_of_optimum_fva': 0.1,
+        'simulate_ko': '0',
+        'all_reversible': '0',
+        'max_c_uptake': None,
+        'max_n_uptake': None,
+        'max_p_uptake': None,
+        'max_s_uptake': None,
+        'max_o_uptake': None,
+        'default_max_uptake': 0,
+        'media_supplement_list': '',
+        'reaction_ko_list': '',
+        'feature_ko_list': '',
+        'custom_bound_list': '',
+        'workspace': params['workspace_name'],
+        'fbamodel_workspace': params['workspace_name']
+      }
+    }
+    return base_task
+  
   # This method returns a set of tasks for the run_flux_balance_analysis app.
   def createFBATasks(self, media_refs, compound_id, fluxes, params):
     if media_refs is None:
       logging.warning('media_refs is None - cannot create FBA tasks')
       return None
     compound_name = self.get_compound_name_by_id(compound_id)
+    if params['cobrapy']:
+      return self.createCobraPyFBATasks(media_refs, compound_id, fluxes, params)
     tasks = [
       {
         'module_name': 'fba_tools',
@@ -96,6 +149,48 @@ class FBAExperimentsUtil:
       for i in range(0, len(media_refs))
     ]
     logging.info(f'run_flux_balance_anlysis tasks: {tasks}')
+    return tasks
+  
+  def createCobraPyFBATasks(self, media_refs, compound_id, fluxes, params):
+    if media_refs is None:
+      logging.warning('media_refs is None - cannot create FBA tasks')
+      return None
+    compound_name = self.get_compound_name_by_id(compound_id)
+    tasks = [
+      {
+        'module_name': 'COBRApyBasedFBA',
+        'function_name': 'run_fba_pipeline',
+        'version': 'beta',
+        'parameters': {
+          'fba_output_id': f'fba-experiment-cobrapy-output-{compound_name}-flux-{fluxes[i]}',
+          'target_reaction': 'bio1',
+          'fbamodel_id': params['fbamodel_id'],
+          'media_id': media_refs[i],
+          'fba_type': 'pFBA',
+          'fva_type': 'FVA',
+          'solver': 'glpk',
+          'minimize_objective': '0',
+          'fraction_of_optimum_pfba': 1.0,
+          'fraction_of_optimum_fva': 0.1,
+          'simulate_ko': '0',
+          'all_reversible': '0',
+          'max_c_uptake': None,
+          'max_n_uptake': None,
+          'max_p_uptake': None,
+          'max_s_uptake': None,
+          'max_o_uptake': None,
+          'default_max_uptake': 0,
+          'media_supplement_list': '',
+          'reaction_ko_list': '',
+          'feature_ko_list': '',
+          'custom_bound_list': '',
+          'workspace': params['workspace_name'],
+          'fbamodel_workspace': params['workspace_name']
+        }
+      }
+      for i in range(0, len(media_refs))
+    ]
+    logging.info(f'run_fba_pipeline tasks: {tasks}')
     return tasks
   
   # This method creates a JSON object that contains the parameters and outputs of each FBA run.

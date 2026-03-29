@@ -62,6 +62,12 @@ parameters:
     short-hint: |
       Increment between values of max flux for the compound.
 
+  cobrapy:
+    ui-name: |
+      Use COBRApy app
+    short-hint: |
+      If checked, this app will run the COBRApyBasedFBA app during each experiment.
+
   cleanup:
     ui-name: |
       Cleanup

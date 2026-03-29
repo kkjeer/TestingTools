@@ -92,6 +92,21 @@
       "allow_multiple": false,
       "optional": true,
       "field_type": "checkbox",
+      "id": "cobrapy"
+    },
+    {
+      "default_values": ["1"],
+      "advanced": true,
+      "checkbox_options": {
+        "unchecked_value": 0,
+        "checked_value": 1
+      },
+      "text_options": {
+        "valid_ws_types": []
+      },
+      "allow_multiple": false,
+      "optional": true,
+      "field_type": "checkbox",
       "id": "cleanup"
     }
   ],
@@ -131,6 +146,10 @@
         {
           "input_parameter": "experiments",
           "target_property": "experiments"
+        },
+        {
+          "input_parameter": "cobrapy",
+          "target_property": "cobrapy"
         },
         {
           "input_parameter": "cleanup",
