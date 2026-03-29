@@ -58,6 +58,8 @@ class AppExplorerUtil:
   
   # This method returns the set of refs to the set of media files created by a KBParallel run of edit_media tasks.
   def getMediaRefs(self, kbparallel_result):
+    results = self.extractResults(kbparallel_result)
+    logging.info(f'getMediaRefs: kbparalell results: {results}')
     if kbparallel_result is None:
       return None
     media_refs = []
@@ -70,8 +72,6 @@ class AppExplorerUtil:
     return media_refs
   
   def extractResults(self, kbparallel_result):
-    results = self.extractResults(kbparallel_result)
-    logging.info(f'getFBARefs: kbparalell results: {results}')
     if kbparallel_result is None:
       return None
     if kbparallel_result['results'] is None:
