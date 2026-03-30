@@ -1,5 +1,6 @@
 import logging
 import os
+import json
 
 from installed_clients.KBParallelClient import KBParallel
 
@@ -52,7 +53,7 @@ class AppExplorerUtil:
       elif 'report_name' in r and r['report_name'].startswith('COBRApy') and 'obj' in r and 'workspace_name' in r:
         output_name = r['obj']
         output_file = file_util.readFileByName(ctx, output_name, r['workspace_name'])
-        logging.info(f'read output file {output_name}: {output_file}')
+        logging.info(f'read output file {output_name}: {json.dumps(output_file, indent=2)}')
         fba_ref = ''
         objective = ''
         if output_file is None:
@@ -60,8 +61,8 @@ class AppExplorerUtil:
           continue
         if 'path' in output_file and output_file['path'] is not None:
           fba_ref = output_file['path'][0]
-        if 'data' in output_file and output_file['data'] is not None and output_file['data'][0] is not None and 'data' in output_file['data'][0] and output_file['data'][0]['data'] is not None:
-          objective = output_file['data'][0]['data']
+        if 'data' in output_file and output_file['data'] is not None and output_file['data'][0] is not None and 'data' in output_file['data'][0] and output_file['data'][0]['data'] is not None and 'objectiveValue' in output_file['data'][0]['data']:
+          objective = output_file['data'][0]['data']['objectiveValue']
         results.append({'fba_ref': fba_ref, 'objective': objective})
       elif 'new_fba_ref' in r and 'objective' in r:
         results.append({'fba_ref': r['new_fba_ref', 'objective': r['objective']]})
