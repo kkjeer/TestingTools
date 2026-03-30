@@ -43,37 +43,35 @@ class AppExplorerUtil:
     return result
   
   def getFBAResults(self, ctx, kbparallel_result, file_util):
+    empty = {'fba_ref': '', 'objective': ''}
     extracted = self.extractResults(kbparallel_result)
     if extracted is None:
-      return None
+      return [empty]
     results = []
     for r in extracted:
       if r is None:
-        results.append({'fba_ref': '', 'objective': ''})
+        results.append(empty)
+      # get values from cobrapy app results
       elif 'report_name' in r and r['report_name'].startswith('COBRApy') and 'obj' in r and 'workspace_name' in r:
         output_name = r['obj']
         output_file = file_util.readFileByName(ctx, output_name, r['workspace_name'])
-        logging.info(f'read output file {output_name}: {json.dumps(output_file, indent=2)}')
+        # logging.info(f'read output file {output_name}: {json.dumps(output_file, indent=2)}')
+        if output_file is None or 'data' not in output_file or output_file['data'] is None or output_file['data'][0] is None:
+          results.append(empty)
+          continue
         fba_ref = ''
         objective = ''
-        if output_file is None:
-          results.append({'fba_ref': '', 'objective': ''})
-          continue
-        if 'path' in output_file and output_file['path'] is not None:
-          fba_ref = output_file['path'][0]
-        elif 'data' in output_file and output_file['data'] is not None and output_file['data'][0] is not None and 'path' in output_file['data'][0]:
-          logging.info('path in output_file[data][0]')
-          fba_ref = output_file['data'][0]['path']
-        elif 'data' in output_file and output_file['data'] is not None and output_file['data'][0] is not None and 'data' in output_file['data'][0] and output_file['data'][0]['data'] is not None and 'path' in output_file['data'][0]['data']:
-          logging.info('path in output_file[data][0][data]')
-          fba_ref = output_file['data'][0]['data']['path']
-        if 'data' in output_file and output_file['data'] is not None and output_file['data'][0] is not None and 'data' in output_file['data'][0] and output_file['data'][0]['data'] is not None and 'objectiveValue' in output_file['data'][0]['data']:
-          objective = output_file['data'][0]['data']['objectiveValue']
+        data = output_file['data'][0]
+        if 'path' in data and data['path'] is not None:
+          fba_ref = output_file['data'][0]['path'][0]
+        if 'data' in data and data['data'] is not None and 'objectiveValue' in data['data']:
+          objective = data['data']['objectiveValue']
         results.append({'fba_ref': fba_ref, 'objective': objective})
+      # get values from fba_tools app results
       elif 'new_fba_ref' in r and 'objective' in r:
-        results.append({'fba_ref': r['new_fba_ref', 'objective': r['objective']]})
+        results.append({'fba_ref': r['new_fba_ref'], 'objective': r['objective']})
       else:
-        results.append({'fba_ref': '', 'objective': ''})
+        results.append(empty)
     return results
   
   # This method returns the set of refs to output objects created by a KBParallel run of run_flux_balance_analysis tasks.
