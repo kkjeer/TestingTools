@@ -61,19 +61,8 @@ class FBAExperimentsUtil:
     experiment = params['experiments'][index]
     return [flux for flux in range(experiment['from_flux'], experiment['to_flux'] + experiment['increment'], experiment['increment'])]
   
-  # This method returns the set of refs to the set of media files created by a KBParallel run of edit_media tasks.
-  def getMediaRefs(self, kbparallel_result):
-    if kbparallel_result is None:
-      return None
-    media_refs = []
-    for r in kbparallel_result['results']:
-      if r['is_error']:
-        media_refs.append('')
-        continue
-      new_media_ref = r['final_job_state']['result'][0]['new_media_ref']
-      media_refs.append(new_media_ref)
-    return media_refs
-  
+  # This method returns a task that runs the base experiment for the FBA app that is configured to run based on the given parameters
+  # (either run_fba_pipline - cobrapy based or run_flux_balance_analysis - legacy app).
   def createFBABaseTask(self, params):
     if params['cobrapy']:
       return self.createCobraPyFBABaseTask(params)
@@ -91,6 +80,7 @@ class FBAExperimentsUtil:
     }
     return base_task
   
+  # This method returns a task that runs that base experiment for the cobrapy-based app.
   def createCobraPyFBABaseTask(self, params):
     base_task = {
       'module_name': 'COBRApyBasedFBA',
@@ -125,7 +115,8 @@ class FBAExperimentsUtil:
     }
     return base_task
   
-  # This method returns a set of tasks for the run_flux_balance_analysis app.
+  # This method returns a set of tasks for the FBA app that is configured to run according to the given parameters
+  # (either run_fba_pipline - cobrapy based or run_flux_balance_analysis - legacy app).
   def createFBATasks(self, media_refs, compound_id, fluxes, params):
     if media_refs is None:
       logging.warning('media_refs is None - cannot create FBA tasks')
@@ -133,8 +124,11 @@ class FBAExperimentsUtil:
     compound_name = self.get_compound_name_by_id(compound_id)
     if params['cobrapy']:
       return self.createCobraPyFBATasks(media_refs, compound_id, fluxes, params)
-    tasks = [
-      {
+    tasks = []
+    for i in range(0, len(media_refs)):
+      if media_refs[i] is None or media_refs[i] == '':
+        continue
+      tasks.append({
         'module_name': 'fba_tools',
         'function_name': 'run_flux_balance_analysis',
         'version': 'release',
@@ -145,19 +139,21 @@ class FBAExperimentsUtil:
           'media_id': media_refs[i],
           'workspace': params['workspace_name']
         }
-      }
-      for i in range(0, len(media_refs))
-    ]
+      })
     logging.info(f'run_flux_balance_anlysis tasks: {tasks}')
     return tasks
   
+  # This method returns a set of tasks for the run_fba_pipeline (cobrapy-based) app.
   def createCobraPyFBATasks(self, media_refs, compound_id, fluxes, params):
     if media_refs is None:
       logging.warning('media_refs is None - cannot create FBA tasks')
       return None
     compound_name = self.get_compound_name_by_id(compound_id)
-    tasks = [
-      {
+    tasks = []
+    for i in range(0, len(media_refs)):
+      if media_refs[i] is None or media_refs[i] == '':
+        continue
+      tasks.append({
         'module_name': 'COBRApyBasedFBA',
         'function_name': 'run_fba_pipeline',
         'version': 'beta',
@@ -187,9 +183,7 @@ class FBAExperimentsUtil:
           'workspace': params['workspace_name'],
           'fbamodel_workspace': params['workspace_name']
         }
-      }
-      for i in range(0, len(media_refs))
-    ]
+      })
     logging.info(f'run_fba_pipeline tasks: {tasks}')
     return tasks
   

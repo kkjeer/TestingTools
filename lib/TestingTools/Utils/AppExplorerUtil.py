@@ -96,17 +96,18 @@ class AppExplorerUtil:
       return {'fba_ref': r['new_fba_ref'], 'objective': r['objective']}
     return empty
   
-  # This method returns the set of refs to output objects created by a KBParallel run of run_flux_balance_analysis tasks.
+  # This method returns the set of refs to each of a set of output objects created by a KBParallel run of run_flux_balance_analysis (or run_fba_pipeline) tasks.
   def getFBARefs(self, ctx, kbparallel_result, file_util):
-    results = self.extractResults(kbparallel_result)
-    logging.info(f'getFBARefs: kbparalell results: {results}')
+    extracted_results = self.extractResults(kbparallel_result)
+    logging.info(f'getFBARefs: extracted results: {extracted_results}')
     if kbparallel_result['results'] is None:
       return []
     fba_refs = []
-    for r in kbparallel_result['results']:
+    for r in extracted_results:
       info = self.getFBAInformationFromExtractedResult(ctx, r, file_util)
       fba_refs.append(info['fba_ref'])
-      continue
+    return fba_refs
+    for r in kbparallel_result['results']:
       if r is None or r['is_error'] or r['final_job_state'] is None or r['final_job_state']['result'] is None or r['final_job_state']['result'][0] is None or r['final_job_state']['result'][0]['new_fba_ref']:
         fba_refs.append('')
         continue
@@ -114,10 +115,17 @@ class AppExplorerUtil:
       fba_refs.append(new_fba_ref)
     return fba_refs
   
-  # This method returns the set of refs to the set of media files created by a KBParallel run of edit_media tasks.
+  # This method returns the set of refs to each of a set of media files created by a KBParallel run of edit_media tasks.
   def getMediaRefs(self, kbparallel_result):
-    results = self.extractResults(kbparallel_result)
-    logging.info(f'getMediaRefs: kbparalell results: {results}')
+    extracted_results = self.extractResults(kbparallel_result)
+    logging.info(f'getMediaRefs: extracted results: {extracted_results}')
+    media_refs = []
+    for r in extracted_results:
+      if r is None or 'new_media_ref' not in r or r['new_media_ref'] is None:
+        media_refs.append('')
+        continue
+      media_refs.append(r['new_media_ref'])
+    return media_refs
     if kbparallel_result is None:
       return None
     media_refs = []
@@ -129,6 +137,8 @@ class AppExplorerUtil:
       media_refs.append(new_media_ref)
     return media_refs
   
+  # This method returns a set of objects extracted from the final job state of the given KBParallel result.
+  # It takes care of error checking for each result so callers can access the objects directly.
   def extractResults(self, kbparallel_result):
     if kbparallel_result is None:
       return None
