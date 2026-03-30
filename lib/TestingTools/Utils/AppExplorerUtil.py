@@ -53,7 +53,16 @@ class AppExplorerUtil:
         output_name = r['obj']
         output_file = file_util.readFileByName(ctx, output_name, r['workspace_name'])
         logging.info(f'read output file {output_name}: {output_file}')
-        results.append({'fba_ref': '', 'objective': ''})
+        fba_ref = ''
+        objective = ''
+        if output_file is None:
+          results.append({'fba_ref': '', 'objective': ''})
+          continue
+        if 'path' in output_file and output_file['path'] is not None:
+          fba_ref = output_file['path'][0]
+        if 'data' in output_file and output_file['data'] is not None and output_file['data'][0] is not None and 'data' in output_file['data'][0] and output_file['data'][0]['data'] is not None:
+          objective = output_file['data'][0]['data']
+        results.append({'fba_ref': fba_ref, 'objective': objective})
       elif 'new_fba_ref' in r and 'objective' in r:
         results.append({'fba_ref': r['new_fba_ref', 'objective': r['objective']]})
       else:
