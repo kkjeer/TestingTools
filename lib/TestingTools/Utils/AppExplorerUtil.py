@@ -61,6 +61,12 @@ class AppExplorerUtil:
           continue
         if 'path' in output_file and output_file['path'] is not None:
           fba_ref = output_file['path'][0]
+        elif 'data' in output_file and output_file['data'] is not None and output_file['data'][0] is not None and 'path' in output_file['data'][0]:
+          logging.info('path in output_file[data][0]')
+          fba_ref = output_file['data'][0]['path']
+        elif 'data' in output_file and output_file['data'] is not None and output_file['data'][0] is not None and 'data' in output_file['data'][0] and output_file['data'][0]['data'] is not None and 'path' in output_file['data'][0]['data']:
+          logging.info('path in output_file[data][0][data]')
+          fba_ref = output_file['data'][0]['data']['path']
         if 'data' in output_file and output_file['data'] is not None and output_file['data'][0] is not None and 'data' in output_file['data'][0] and output_file['data'][0]['data'] is not None and 'objectiveValue' in output_file['data'][0]['data']:
           objective = output_file['data'][0]['data']['objectiveValue']
         results.append({'fba_ref': fba_ref, 'objective': objective})
