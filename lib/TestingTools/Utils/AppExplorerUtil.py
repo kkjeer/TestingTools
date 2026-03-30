@@ -1,6 +1,5 @@
 import logging
 import os
-import json
 
 from installed_clients.KBParallelClient import KBParallel
 
@@ -49,13 +48,15 @@ class AppExplorerUtil:
       return [empty]
     results = []
     for r in extracted:
+      info = self.getFBAInformationFromExtractedResult(ctx, r, file_util)
+      results.append(info)
+      continue
       if r is None:
         results.append(empty)
       # get values from cobrapy app results
       elif 'report_name' in r and r['report_name'].startswith('COBRApy') and 'obj' in r and 'workspace_name' in r:
         output_name = r['obj']
         output_file = file_util.readFileByName(ctx, output_name, r['workspace_name'])
-        # logging.info(f'read output file {output_name}: {json.dumps(output_file, indent=2)}')
         if output_file is None or 'data' not in output_file or output_file['data'] is None or output_file['data'][0] is None:
           results.append(empty)
           continue
@@ -65,7 +66,7 @@ class AppExplorerUtil:
         if 'path' in data and data['path'] is not None:
           fba_ref = output_file['data'][0]['path'][0]
         if 'data' in data and data['data'] is not None and 'objectiveValue' in data['data']:
-          objective = data['data']['objectiveValue']
+          objective = str(data['data']['objectiveValue'])
         results.append({'fba_ref': fba_ref, 'objective': objective})
       # get values from fba_tools app results
       elif 'new_fba_ref' in r and 'objective' in r:
@@ -74,14 +75,38 @@ class AppExplorerUtil:
         results.append(empty)
     return results
   
+  def getFBAInformationFromExtractedResult(self, ctx, r, file_util):
+    empty = {'fba_ref': '', 'objective': ''}
+    if r is None or r['is_error']:
+      return empty
+    if 'report_name' in r and r['report_name'].startswith('COBRApy') and 'obj' in r and 'workspace_name' in r:
+      output_name = r['obj']
+      output_file = file_util.readFileByName(ctx, output_name, r['workspace_name'])
+      if output_file is None or 'data' not in output_file or output_file['data'] is None or output_file['data'][0] is None:
+        return empty
+      fba_ref = ''
+      objective = ''
+      data = output_file['data'][0]
+      if 'path' in data and data['path'] is not None:
+        fba_ref = output_file['data'][0]['path'][0]
+      if 'data' in data and data['data'] is not None and 'objectiveValue' in data['data']:
+        objective = str(data['data']['objectiveValue'])
+      return {'fba_ref': fba_ref, 'objective': objective}
+    elif 'new_fba_ref' in r and 'objective' in r:
+      return {'fba_ref': r['new_fba_ref'], 'objective': r['objective']}
+    return empty
+  
   # This method returns the set of refs to output objects created by a KBParallel run of run_flux_balance_analysis tasks.
-  def getFBARefs(self, kbparallel_result):
+  def getFBARefs(self, ctx, kbparallel_result, file_util):
     results = self.extractResults(kbparallel_result)
     logging.info(f'getFBARefs: kbparalell results: {results}')
     if kbparallel_result['results'] is None:
       return []
     fba_refs = []
     for r in kbparallel_result['results']:
+      info = self.getFBAInformationFromExtractedResult(ctx, r, file_util)
+      fba_refs.append(info['fba_ref'])
+      continue
       if r is None or r['is_error'] or r['final_job_state'] is None or r['final_job_state']['result'] is None or r['final_job_state']['result'][0] is None or r['final_job_state']['result'][0]['new_fba_ref']:
         fba_refs.append('')
         continue

@@ -296,35 +296,14 @@ This sample module contains one small method that filters contigs.
         if base_result is None:
           raise ValueError('FBAExperiments: could not run base experiment.')
 
-        extracted = app_explorer_util.extractResults(base_result)
-        logging.info(f'extracted_base_results: {extracted}')
         fba_base_results = app_explorer_util.getFBAResults(ctx, base_result, file_util)
         logging.info(f'fba_base_results: {fba_base_results}')
 
-        # Build the report
-        summary = f'<p>extracted base results: {extracted}</p><p>fba base results: {fba_base_results}</p>'
-        reportObj = {
-          'objects_created': objects_created,
-          'text_message': summary
-        }
-        report = KBaseReport(self.callback_url)
-        report_info = report.create({'report': reportObj, 'workspace_name': params['workspace_name']})
-
-        # Construct output
-        output = {'report_name': report_info['name'],
-                  'report_ref': report_info['ref']
-                  }
-        logging.info('returning:' + pformat(output))
-        return [output]
-    
-        if base_result['results'] is None or base_result['results'][0] is None or base_result['results'][0]['final_job_state'] is None or base_result['results'][0]['final_job_state']['result'] is None or base_result['results'][0]['final_job_state']['result'][0] is None:
-          raise ValueError('FBAExperiments: base experiment failed')
-        if 'new_fba_ref' not in base_result['results'][0]['final_job_state']['result'][0]:
-          raise ValueError(f'new_fba_ref not in base result')
-        if 'objective' not in base_result['results'][0]['final_job_state']['result'][0]:
-          raise ValueError(f'objective not in base result')
-        base_fba_ref = base_result['results'][0]['final_job_state']['result'][0]['new_fba_ref']
-        base_objective = base_result['results'][0]['final_job_state']['result'][0]['objective']
+        if fba_base_results is None or fba_base_results[0] is None:
+          raise ValueError('FBAExperiments: could not extract results from base experiment.')
+        
+        base_fba_ref = fba_base_results[0]['fba_ref']
+        base_objective = fba_base_results[0]['objective']
 
         files_to_cleanup = [base_fba_ref]
 
@@ -345,7 +324,7 @@ This sample module contains one small method that filters contigs.
           fba_tasks = fba_experiments_util.createFBATasks(media_refs, compound_id, fluxes, params)
           fba_result = app_explorer_util.runKBParallel(fba_tasks)
           logging.info(f'FBAExperiments: FBA KBParallel result: {fba_result}')
-          fba_refs = app_explorer_util.getFBARefs(fba_result)
+          fba_refs = app_explorer_util.getFBARefs(ctx, fba_result, file_util)
           logging.info(f'FBAExperiments: fba refs: {fba_refs}')
           if fba_refs is not None:
             files_to_cleanup = files_to_cleanup + fba_refs
