@@ -77,7 +77,7 @@ class AppExplorerUtil:
   
   def getFBAInformationFromExtractedResult(self, ctx, r, file_util):
     empty = {'fba_ref': '', 'objective': ''}
-    if r is None or r['is_error']:
+    if r is None or ('is_error' in r and r['is_error']):
       return empty
     if 'report_name' in r and r['report_name'].startswith('COBRApy') and 'obj' in r and 'workspace_name' in r:
       output_name = r['obj']
