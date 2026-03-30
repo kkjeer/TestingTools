@@ -41,6 +41,25 @@ class AppExplorerUtil:
     result = parallel_runner.run_batch(batch_run_params)
     return result
   
+  def getFBAResults(self, ctx, kbparallel_result, file_util):
+    extracted = self.extractResults(kbparallel_result)
+    if extracted is None:
+      return None
+    results = []
+    for r in extracted:
+      if r is None:
+        results.append({'fba_ref': '', 'objective': ''})
+      elif 'report_name' in r and r['report_name'].startswith('COBRApy') and 'obj' in r and 'workspace_name' in r:
+        output_name = r['obj']
+        output_file = file_util.readFileByName(ctx, output_name, r['workspace_name'])
+        logging.info(f'read output file {output_name}: {output_file}')
+        results.append({'fba_ref': '', 'objective': ''})
+      elif 'new_fba_ref' in r and 'objective' in r:
+        results.append({'fba_ref': r['new_fba_ref', 'objective': r['objective']]})
+      else:
+        results.append({'fba_ref': '', 'objective': ''})
+    return results
+  
   # This method returns the set of refs to output objects created by a KBParallel run of run_flux_balance_analysis tasks.
   def getFBARefs(self, kbparallel_result):
     results = self.extractResults(kbparallel_result)

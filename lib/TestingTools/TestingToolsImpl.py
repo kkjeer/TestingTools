@@ -296,11 +296,13 @@ This sample module contains one small method that filters contigs.
         if base_result is None:
           raise ValueError('FBAExperiments: could not run base experiment.')
 
-        base_results = app_explorer_util.extractResults(base_result)
-        logging.info(f'base_results: {base_results}')
+        extracted = app_explorer_util.extractResults(base_result)
+        logging.info(f'extracted_base_results: {extracted}')
+        fba_base_results = app_explorer_util.getFBAResults(ctx, base_result, file_util)
+        logging.info(f'fba_base_results: {fba_base_results}')
 
         # Build the report
-        summary = f'<p>extract base results: {base_results}</p>'
+        summary = f'<p>extracted base results: {extracted}</p><p>fba base results: {fba_base_results}</p>'
         reportObj = {
           'objects_created': objects_created,
           'text_message': summary
