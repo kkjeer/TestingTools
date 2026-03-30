@@ -317,7 +317,6 @@ This sample module contains one small method that filters contigs.
     
         if base_result['results'] is None or base_result['results'][0] is None or base_result['results'][0]['final_job_state'] is None or base_result['results'][0]['final_job_state']['result'] is None or base_result['results'][0]['final_job_state']['result'][0] is None:
           raise ValueError('FBAExperiments: base experiment failed')
-        logging.info(f'base result: {base_result['results'][0]['final_job_state']['result'][0]}')
         if 'new_fba_ref' not in base_result['results'][0]['final_job_state']['result'][0]:
           raise ValueError(f'new_fba_ref not in base result')
         if 'objective' not in base_result['results'][0]['final_job_state']['result'][0]:
