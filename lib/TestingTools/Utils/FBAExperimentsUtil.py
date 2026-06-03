@@ -209,7 +209,7 @@ class FBAExperimentsUtil:
 
       # Get information from the fba result
       r = kbparallel_result['results'][i]['final_job_state']['result'][0]
-      logging.info(f'+++ CREATE OUTPUT JSON: r: {json.dumps(r, 2)}')
+      logging.info(f'+++ CREATE OUTPUT JSON: r: {json.dumps(r, indent=2)}')
       if 'objective' not in r:
         logging.warning(f'+++ WARNING: objective not found in results object, aborting creation of output json')
         return result
