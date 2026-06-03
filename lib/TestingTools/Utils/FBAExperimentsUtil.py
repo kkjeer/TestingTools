@@ -48,7 +48,7 @@ class FBAExperimentsUtil:
           'version': 'release',
           'parameters': {
             'media_id': params['media_id'],
-            'media_output_id': f'fba-experiments-media-{compound_name}-flux-{flux}',
+            'media_output_id': f'temp-media-{compound_name}-flux-{flux}',
             'compounds_to_add': compounds_to_add,
             'compounds_to_change': compounds_to_change,
             'compounds_to_remove': [],
@@ -72,7 +72,7 @@ class FBAExperimentsUtil:
       'function_name': 'run_flux_balance_analysis',
       'version': 'release',
       'parameters': {
-        'fba_output_id': f'fba-experiment-output-base',
+        'fba_output_id': f'temp-output-base',
         'target_reaction': 'bio1',
         'fbamodel_id': params['fbamodel_id'],
         'media_id': params['media_id'],
@@ -88,7 +88,7 @@ class FBAExperimentsUtil:
       'function_name': 'run_fba_pipeline',
       'version': 'beta',
       'parameters': {
-        'fba_output_id': 'fba-experiment-cobrapy-output-base',
+        'fba_output_id': 'temp-cobrapy-output-base',
         'target_reaction': 'bio1',
         'fbamodel_id': params['fbamodel_id'],
         'media_id': params['media_id'],
@@ -134,7 +134,7 @@ class FBAExperimentsUtil:
         'function_name': 'run_flux_balance_analysis',
         'version': 'release',
         'parameters': {
-          'fba_output_id': f'fba-experiment-output-{compound_name}-flux-{fluxes[i]}',
+          'fba_output_id': f'temp-output-{compound_name}-flux-{fluxes[i]}',
           'target_reaction': 'bio1',
           'fbamodel_id': params['fbamodel_id'],
           'media_id': media_refs[i],
@@ -159,7 +159,7 @@ class FBAExperimentsUtil:
         'function_name': 'run_fba_pipeline',
         'version': 'beta',
         'parameters': {
-          'fba_output_id': f'fba-experiment-cobrapy-output-{compound_name}-flux-{fluxes[i]}',
+          'fba_output_id': f'temp-cobrapy-output-{compound_name}-flux-{fluxes[i]}',
           'target_reaction': 'bio1',
           'fbamodel_id': params['fbamodel_id'],
           'media_id': media_refs[i],

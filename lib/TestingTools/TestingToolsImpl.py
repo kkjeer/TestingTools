@@ -242,14 +242,14 @@ This sample module contains one small method that filters contigs.
         if base_result is None:
           raise ValueError('FBAExperiments: could not run base experiment.')
 
-        fba_base_results = app_explorer_util.getFBAInformation(base_result, file_util)
-        logging.info(f'fba_base_results: {fba_base_results}')
+        fba_base_info = app_explorer_util.getFBAInformation(base_result, file_util)
+        logging.info(f'FBAExperiments: fba_base_info: {fba_base_info}')
 
-        if fba_base_results is None or fba_base_results[0] is None:
+        if fba_base_info is None or fba_base_info[0] is None:
           raise ValueError('FBAExperiments: could not extract results from base experiment.')
         
-        base_fba_ref = fba_base_results[0]['fba_ref']
-        base_objective = fba_base_results[0]['objective']
+        base_fba_ref = fba_base_info[0]['fba_ref']
+        base_objective = fba_base_info[0]['objective']
 
         files_to_cleanup = [base_fba_ref]
 
