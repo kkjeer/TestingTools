@@ -128,10 +128,11 @@ This sample module contains one small method that filters contigs.
         
         # Write the output json to an AttributeMapping file
         mapping_data = output_util.createFlippedAttributeMappingData(output_json)
-        logging.info(f'FBAExplorer: attribute mapping data: {mapping_data}')
-        output_file = file_util.writeAttributeMappingFile(mapping_data, 'fba-explorer-results')
-        if output_file is not None:
-          objects_created.append(output_file)
+        if mapping_data is not None:
+          logging.info(f'FBAExplorer: attribute mapping data: {mapping_data}')
+          output_file = file_util.writeAttributeMappingFile(mapping_data, 'fba-explorer-results')
+          if output_file is not None:
+            objects_created.append(output_file)
           
         # HTML table displayed to the user in the report at the end
         summary = output_util.createSummary(output_json)
@@ -331,7 +332,7 @@ This sample module contains one small method that filters contigs.
 
           # Update the output object with the results of running the experiment
           base_flux = fba_experiments_util.getBaseCompoundFlux(base_media, compound_id)
-          output = fba_experiments_util.createOutputJson(params, i, fba_result, base_flux, base_objective)
+          output = fba_experiments_util.createOutputJson(params, i, fba_result, base_flux, base_objective, file_util)
           logging.info(f'FBAExperiments: output json: {pformat(output)}')
           experiment_json = {**experiment_json, **output}
 
@@ -355,9 +356,10 @@ This sample module contains one small method that filters contigs.
 
         # Write the metamorphic relations to an AttributeMapping file
         relations_mapping_data = output_util.createFlippedAttributeMappingData(relations, get_unit=lambda row: f'if {row["if..."]}, then {row["then..."]} (for flux values {row["flux values"]})')
-        relations_output_file = file_util.writeAttributeMappingFile(relations_mapping_data, 'fba-metamorphic-relations')
-        if relations_output_file is not None:
-          objects_created.append(relations_output_file)
+        if relations_mapping_data is not None:
+          relations_output_file = file_util.writeAttributeMappingFile(relations_mapping_data, 'fba-metamorphic-relations')
+          if relations_output_file is not None:
+            objects_created.append(relations_output_file)
 
         # Build the report
         summary = '<p><strong>Experimental data:</strong></p>' + output_util.createSummary(experiment_json) + '<br /><p><strong>Metamorphic relations:</strong></p>' + output_util.createSummary(relations)

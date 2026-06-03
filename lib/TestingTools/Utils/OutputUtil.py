@@ -35,6 +35,8 @@ class OutputUtil:
   # The data is "flipped" - it uses the "column" keys of the json as the rows and the "row" keys as columns.
   def createFlippedAttributeMappingData(self, output_json, get_unit=lambda row: row['objective_value']):
     rows = list(output_json.keys())
+    if len(rows) < 1:
+      return None
     cols = list(output_json[rows[0]].keys())
     instances = {}
     for c in cols:
