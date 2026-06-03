@@ -181,7 +181,7 @@ This sample module contains one small method that filters contigs.
         file_util = FileUtil(self.config, ctx, params)
 
         # Read the input file (output file of an explorer app)
-        input_file = file_util.readFileById(ctx, params['mapping_id'])
+        input_file = file_util.readFileById(params['mapping_id'])
         explorer_output = input_util.getFlippedAttributeMappingOutputAsJson(input_file)
 
         # Add the feedback to the FBA results
@@ -289,7 +289,7 @@ This sample module contains one small method that filters contigs.
 
         objects_created = []
 
-        base_media = file_util.readFileById(ctx, params['media_id'])
+        base_media = file_util.readFileById(params['media_id'])
 
         experiment_json = {}
         base_task = fba_experiments_util.createFBABaseTask(params)
@@ -406,7 +406,7 @@ This sample module contains one small method that filters contigs.
         file_util = FileUtil(self.config, ctx, params)
 
         # Read the input file (output file of a metamorphic relation inference app)
-        input_file = file_util.readFileById(ctx, params['mapping_id'])
+        input_file = file_util.readFileById(params['mapping_id'])
         relations_output = input_util.getFlippedAttributeMappingOutputAsJson(input_file)
         logging.info(f'FBABehaviorFeedback: relations output: {relations_output}')
 

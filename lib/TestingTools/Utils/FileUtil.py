@@ -18,12 +18,12 @@ class FileUtil:
     
   # This method reads a workspace file using its file ref.
   # This is the preferred way to read files.
-  def readFileById(self, ctx, file_ref):
+  def readFileById(self, file_ref):
     if file_ref is None or file_ref == '':
       logging.error('cannot read empty file ref')
       return None
     try:
-      ws = Workspace(self.ws_url, token=ctx['token'])
+      ws = Workspace(self.ws_url, token=self.ctx['token'])
       obj = ws.get_objects2({'objects' : [{'ref' : file_ref}]})
       return obj
     except Exception as e:
