@@ -210,10 +210,10 @@ class FBAExperimentsUtil:
       # Get information from the fba result
       r = kbparallel_result['results'][i]['final_job_state']['result'][0]
       logging.info(f'+++ CREATE OUTPUT JSON: r: {json.dumps(r, indent=2)}')
-      if 'objective' not in r:
-        logging.warning(f'+++ WARNING: objective not found in results object, aborting creation of output json')
+      objective = self.getObjectiveValue(r)
+      if objective is None:
+        logging.warning(f'+++ WARNING: could not get objective value, aborting creation of output json')
         return result
-      objective = r['objective']
 
       max_flux_compare = self.compareNumbers(base_flux, fluxes[i])
       objective_compare = self.compareNumbers(base_objective, objective)
@@ -227,6 +227,16 @@ class FBAExperimentsUtil:
     
       result[key] = obj
     return result
+  
+  # This method returns the objective value obtained from running an FBA task via KBParallel
+  # (or None if no objective can be found in the result object).
+  # The result objective should be extracted from a kbparallel_result object using something like
+  # result = kbparallel_result['results'][i]['final_job_state']['result'][0] for some integer i.
+  def getObjectiveValue(self, result):
+    if 'objective' in result:
+      return result['objective']
+    # TODO: fill in where result does not contain objective
+    return None
   
   # This method returns the maxFlux value of the compound with the given id in the given media
   # (if the compound is present; otherwise it returns 0).
