@@ -17,7 +17,7 @@ class FBAExperimentsUtil:
   # This method returns a set of tasks for the edit_media app.
   def createEditMediaTasks(self, media, params, indices=None):
     if media is None:
-      logging.warning(f'media is none - cannot create edit_media tasks')
+      logging.warning(f'FBAExperiments: media is none - cannot create edit_media tasks')
       return None
     mediacompounds = media['data'][0]['data']['mediacompounds']
     tasks = []
@@ -120,7 +120,7 @@ class FBAExperimentsUtil:
   # (either run_fba_pipline - cobrapy based or run_flux_balance_analysis - legacy app).
   def createFBATasks(self, media_refs, compound_id, fluxes, params):
     if media_refs is None:
-      logging.warning('media_refs is None - cannot create FBA tasks')
+      logging.warning('FBAExperiments: media_refs is None - cannot create FBA tasks')
       return None
     compound_name = self.get_compound_name_by_id(compound_id)
     if params['cobrapy']:
@@ -141,13 +141,13 @@ class FBAExperimentsUtil:
           'workspace': params['workspace_name']
         }
       })
-    logging.info(f'run_flux_balance_anlysis tasks: {tasks}')
+    logging.info(f'FBAExperiments: run_flux_balance_anlysis tasks: {tasks}')
     return tasks
   
   # This method returns a set of tasks for the run_fba_pipeline (cobrapy-based) app.
   def createCobraPyFBATasks(self, media_refs, compound_id, fluxes, params):
     if media_refs is None:
-      logging.warning('media_refs is None - cannot create FBA tasks')
+      logging.warning('FBAExperiments: media_refs is None - cannot create FBA tasks')
       return None
     compound_name = self.get_compound_name_by_id(compound_id)
     tasks = []
@@ -185,7 +185,7 @@ class FBAExperimentsUtil:
           'fbamodel_workspace': params['workspace_name']
         }
       })
-    logging.info(f'run_fba_pipeline tasks: {tasks}')
+    logging.info(f'FBAExperiments: run_fba_pipeline tasks: {tasks}')
     return tasks
   
   # This method creates a JSON object that contains the parameters and outputs of each FBA run.
@@ -205,13 +205,13 @@ class FBAExperimentsUtil:
     result[f'{compound_id} base'] = base_obj
 
     fluxes = self.getFluxes(params, index)
-    for i in range(0, len(fba_infos['results'])):
+    for i in range(0, len(fba_infos)):
       key = f'Experiment {index}: {compound_id} variation {i}'
 
       # Get the objective from the fba info
       info = fba_infos[i]
       if 'objective' not in info:
-        logging.warning(f'+++ CREATE OUTPUT JSON: could not get objective value, aborting creation of output json. r: {json.dumps(info, indent=2)}')
+        logging.warning(f'FBAExperiments: could not get objective value, aborting creation of output json. info: {json.dumps(info, indent=2)}')
         return result
       objective = info['objective']
 
