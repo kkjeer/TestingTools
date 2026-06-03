@@ -1,6 +1,7 @@
 import logging
 import os
 import requests # pyright: ignore[reportMissingModuleSource]
+import json
 
 # This class contains utilities for the FBAExperiments app.
 class FBAExperimentsUtil:
@@ -208,6 +209,10 @@ class FBAExperimentsUtil:
 
       # Get information from the fba result
       r = kbparallel_result['results'][i]['final_job_state']['result'][0]
+      logging.info(f'+++ CREATE OUTPUT JSON: r: {json.dumps(r, 2)}')
+      if 'objective' not in r:
+        logging.warning(f'+++ WARNING: objective not found in results object, aborting creation of output json')
+        return result
       objective = r['objective']
 
       max_flux_compare = self.compareNumbers(base_flux, fluxes[i])
