@@ -119,7 +119,7 @@ This sample module contains one small method that filters contigs.
         tasks = fba_explorer_util.createFBATasks(params)
         kbparallel_result = app_explorer_util.runKBParallel(tasks)
         logging.info(f'FBAExplorer: KBParallel result: {kbparallel_result}')
-        fba_refs = app_explorer_util.getFBARefs(kbparallel_result)
+        fba_refs = app_explorer_util.getFBARefs(kbparallel_result, file_util)
         output_json = fba_explorer_util.createOutputJson(tasks, kbparallel_result)
         
         # Set of objects created during this app run (will be linked to in the report at the end)
@@ -270,7 +270,7 @@ This sample module contains one small method that filters contigs.
           fba_tasks = fba_experiments_util.createFBATasks(media_refs, compound_id, fluxes, params)
           fba_result = app_explorer_util.runKBParallel(fba_tasks)
           logging.info(f'FBAExperiments: FBA KBParallel result: {fba_result}')
-          fba_refs = app_explorer_util.getFBARefs(ctx, fba_result, file_util)
+          fba_refs = app_explorer_util.getFBARefs(fba_result, file_util)
           logging.info(f'FBAExperiments: fba refs: {fba_refs}')
           if fba_refs is not None:
             files_to_cleanup = files_to_cleanup + fba_refs
