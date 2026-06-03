@@ -41,9 +41,10 @@ class AppExplorerUtil:
     result = parallel_runner.run_batch(batch_run_params)
     return result
   
-  # This method returns FBA-related information (fba_ref and objective)
+  # This method returns a set of FBA-related information 
+  # (each object in the resulting array contains fba_ref and objective)
   # extracted from the results of running a set of tasks via KBParallel.
-  def getFBAResults(self, kbparallel_result, file_util):
+  def getFBAInformation(self, kbparallel_result, file_util):
     empty = {'fba_ref': '', 'objective': ''}
     extracted = self.extractResults(kbparallel_result)
     if extracted is None:
@@ -54,7 +55,7 @@ class AppExplorerUtil:
       results.append(info)
     return results
   
-  # This helper method returns FBA-related information (fba_ref and objective)
+  # This helper method returns an object containing FBA-related information (fba_ref and objective)
   # from the results extracted from running a single task in a KBParallel task set.
   def getFBAInformationFromExtractedResult(self, r, file_util):
     empty = {'fba_ref': '', 'objective': ''}

@@ -242,7 +242,7 @@ This sample module contains one small method that filters contigs.
         if base_result is None:
           raise ValueError('FBAExperiments: could not run base experiment.')
 
-        fba_base_results = app_explorer_util.getFBAResults(base_result, file_util)
+        fba_base_results = app_explorer_util.getFBAInformation(base_result, file_util)
         logging.info(f'fba_base_results: {fba_base_results}')
 
         if fba_base_results is None or fba_base_results[0] is None:
@@ -270,6 +270,8 @@ This sample module contains one small method that filters contigs.
           fba_tasks = fba_experiments_util.createFBATasks(media_refs, compound_id, fluxes, params)
           fba_result = app_explorer_util.runKBParallel(fba_tasks)
           logging.info(f'FBAExperiments: FBA KBParallel result: {fba_result}')
+
+          # Get the set of refs to the FBA output files that were created; these should be cleaned up (if specified) at the end of the app run
           fba_refs = app_explorer_util.getFBARefs(fba_result, file_util)
           logging.info(f'FBAExperiments: fba refs: {fba_refs}')
           if fba_refs is not None:
@@ -277,9 +279,9 @@ This sample module contains one small method that filters contigs.
 
           # Update the output object with the results of running the experiment
           base_flux = fba_experiments_util.getBaseCompoundFlux(base_media, compound_id)
-          test_fba_results = app_explorer_util.getFBAResults(fba_result, file_util)
-          logging.info(f'FBAExperiments: test fba results: {pformat(test_fba_results)}')
-          output = fba_experiments_util.createOutputJson(params, i, fba_result, base_flux, base_objective, file_util)
+          fba_infos = app_explorer_util.getFBAInformation(fba_result, file_util)
+          logging.info(f'FBAExperiments: fba infos: {pformat(fba_infos)}')
+          output = fba_experiments_util.createOutputJson(params, i, fba_infos, base_flux, base_objective, file_util)
           logging.info(f'FBAExperiments: output json: {pformat(output)}')
           experiment_json = {**experiment_json, **output}
 

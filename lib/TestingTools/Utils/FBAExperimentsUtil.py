@@ -189,7 +189,8 @@ class FBAExperimentsUtil:
     return tasks
   
   # This method creates a JSON object that contains the parameters and outputs of each FBA run.
-  def createOutputJson(self, params, index, kbparallel_result, base_flux, base_objective, file_util):
+  # fba_infos should be an array of objects, each of which contains an 'objective' key with a numerical value.
+  def createOutputJson(self, params, index, fba_infos, base_flux, base_objective):
     result = {}
     compound_id = params['experiments'][index]['compound_id']
     compound_name = self.get_compound_name_by_id(compound_id)
@@ -204,15 +205,15 @@ class FBAExperimentsUtil:
     result[f'{compound_id} base'] = base_obj
 
     fluxes = self.getFluxes(params, index)
-    for i in range(0, len(kbparallel_result['results'])):
+    for i in range(0, len(fba_infos['results'])):
       key = f'Experiment {index}: {compound_id} variation {i}'
 
-      # Get information from the fba result
-      r = kbparallel_result['results'][i]['final_job_state']['result'][0]
-      objective = self.getObjectiveValue(r, file_util)
-      if objective is None:
-        logging.warning(f'+++ CREATE OUTPUT JSON: could not get objective value, aborting creation of output json. r: {json.dumps(r, indent=2)}')
+      # Get the objective from the fba info
+      info = fba_infos[i]
+      if 'objective' not in info:
+        logging.warning(f'+++ CREATE OUTPUT JSON: could not get objective value, aborting creation of output json. r: {json.dumps(info, indent=2)}')
         return result
+      objective = info['objective']
 
       max_flux_compare = self.compareNumbers(base_flux, fluxes[i])
       objective_compare = self.compareNumbers(base_objective, objective)
@@ -226,23 +227,6 @@ class FBAExperimentsUtil:
     
       result[key] = obj
     return result
-  
-  # This method returns the objective value obtained from running an FBA task via KBParallel
-  # (or None if no objective can be found in the result object).
-  # The result objective should be extracted from a kbparallel_result object using something like
-  # result = kbparallel_result['results'][i]['final_job_state']['result'][0] for some integer i.
-  def getObjectiveValue(self, result, file_util):
-    # Legacy FBA app: should include the objective as part of the results object.
-    if 'objective' in result:
-      return result['objective']
-    # COBRApy-based FBA app: should include a ref to the report created by running the app;
-    # we need to read this file in order to get the objective
-    if 'report_ref' in result:
-      r = file_util.readFileById(result['report_ref'])
-      logging.info(f'+++ GET OBJECTIVE VALUE: read report file from ref {result["report_ref"]}: {json.dumps(r, indent=2)}')
-      if r is not None and 'objective' in r:
-        return r['objective']
-    return None
   
   # This method returns the maxFlux value of the compound with the given id in the given media
   # (if the compound is present; otherwise it returns 0).
