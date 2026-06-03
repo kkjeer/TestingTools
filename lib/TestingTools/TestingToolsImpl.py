@@ -281,7 +281,7 @@ This sample module contains one small method that filters contigs.
           base_flux = fba_experiments_util.getBaseCompoundFlux(base_media, compound_id)
           fba_infos = app_explorer_util.getFBAInformation(fba_result, file_util)
           logging.info(f'FBAExperiments: fba infos: {pformat(fba_infos)}')
-          output = fba_experiments_util.createOutputJson(params, i, fba_infos, base_flux, base_objective, file_util)
+          output = fba_experiments_util.createOutputJson(params, i, fba_infos, base_flux, base_objective)
           logging.info(f'FBAExperiments: output json: {pformat(output)}')
           experiment_json = {**experiment_json, **output}
 
