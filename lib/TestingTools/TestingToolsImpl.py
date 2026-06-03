@@ -227,61 +227,6 @@ This sample module contains one small method that filters contigs.
         # Print statements to stdout/stderr are captured and available as the App log
         logging.info('Starting run_FBAExperiments function. Params=' + pformat(params))
 
-        # test_cobrapy_tasks = [
-        #    {
-        #     'module_name': 'COBRApyBasedFBA',
-        #     'function_name': 'run_fba_pipeline',
-        #     'version': 'beta',
-        #     'parameters': {
-        #       'fba_output_id': 'cobrapy-test-output',
-        #       'target_reaction': 'bio1',
-        #       'fbamodel_id': params['fbamodel_id'],
-        #       'media_id': params['media_id'],
-        #       'fba_type': 'pFBA',
-        #       'fva_type': 'FVA',
-        #       'solver': 'glpk',
-        #       'minimize_objective': '0',
-        #       'fraction_of_optimum_pfba': 1.0,
-        #       'fraction_of_optimum_fva': 0.1,
-        #       'simulate_ko': '0',
-        #       'all_reversible': '0',
-        #       'max_c_uptake': None,
-        #       'max_n_uptake': None,
-        #       'max_p_uptake': None,
-        #       'max_s_uptake': None,
-        #       'max_o_uptake': None,
-        #       'default_max_uptake': 0,
-        #       'media_supplement_list': '',
-        #       'reaction_ko_list': '',
-        #       'feature_ko_list': '',
-        #       'custom_bound_list': '',
-        #       'workspace': params['workspace_name'],
-        #       'fbamodel_workspace': params['workspace_name']
-        #     }
-        #   }
-        # ]
-        # logging.info(f'cobrapy tasks: {test_cobrapy_tasks}')
-        # appexplorer_util = AppExplorerUtil(self.config)
-        # test_cobrapy_result = appexplorer_util.runKBParallel(test_cobrapy_tasks)
-        # logging.info(f'cobrapy result: {test_cobrapy_result}')
-
-        # # Build the report
-        # summary = f'tried to run cobrapy fba app'
-        # reportObj = {
-        #   'objects_created': [],
-        #   'text_message': summary
-        # }
-        # report = KBaseReport(self.callback_url)
-        # report_info = report.create({'report': reportObj, 'workspace_name': params['workspace_name']})
-
-        # # Construct output
-        # output = {'report_name': report_info['name'],
-        #           'report_ref': report_info['ref']
-        #           }
-
-        # # return the results
-        # return [output]
-
         app_explorer_util = AppExplorerUtil(self.config)
         file_util = FileUtil(self.config, ctx, params)
         output_util = OutputUtil(self.config)
@@ -297,7 +242,7 @@ This sample module contains one small method that filters contigs.
         if base_result is None:
           raise ValueError('FBAExperiments: could not run base experiment.')
 
-        fba_base_results = app_explorer_util.getFBAResults(ctx, base_result, file_util)
+        fba_base_results = app_explorer_util.getFBAResults(base_result, file_util)
         logging.info(f'fba_base_results: {fba_base_results}')
 
         if fba_base_results is None or fba_base_results[0] is None:
@@ -332,6 +277,8 @@ This sample module contains one small method that filters contigs.
 
           # Update the output object with the results of running the experiment
           base_flux = fba_experiments_util.getBaseCompoundFlux(base_media, compound_id)
+          test_fba_results = app_explorer_util.getFBAResults(fba_result, file_util)
+          logging.info(f'FBAExperiments: test fba results: {pformat(test_fba_results)}')
           output = fba_experiments_util.createOutputJson(params, i, fba_result, base_flux, base_objective, file_util)
           logging.info(f'FBAExperiments: output json: {pformat(output)}')
           experiment_json = {**experiment_json, **output}

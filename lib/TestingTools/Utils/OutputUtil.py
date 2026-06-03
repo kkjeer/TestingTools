@@ -70,6 +70,8 @@ class OutputUtil:
   # This table can be appended to the app summary that is displayed to the user.
   def createSummary(self, output_json):
     rows = list(output_json.keys())
+    if len(rows) < 1:
+      return "<p>ERROR: could not create summary from output json: rows are empty</p>"
     cols = list(output_json[rows[0]].keys())
 
     # Top row: column names

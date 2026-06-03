@@ -41,47 +41,29 @@ class AppExplorerUtil:
     result = parallel_runner.run_batch(batch_run_params)
     return result
   
-  def getFBAResults(self, ctx, kbparallel_result, file_util):
+  # This method returns FBA-related information (fba_ref and objective) extracted from
+  # the result of running a set of tasks via KBParallel.
+  def getFBAResults(self, kbparallel_result, file_util):
     empty = {'fba_ref': '', 'objective': ''}
     extracted = self.extractResults(kbparallel_result)
     if extracted is None:
       return [empty]
     results = []
     for r in extracted:
-      info = self.getFBAInformationFromExtractedResult(ctx, r, file_util)
+      info = self.getFBAInformationFromExtractedResult(r, file_util)
       results.append(info)
-      continue
-      if r is None:
-        results.append(empty)
-      # get values from cobrapy app results
-      elif 'report_name' in r and r['report_name'].startswith('COBRApy') and 'obj' in r and 'workspace_name' in r:
-        output_name = r['obj']
-        output_file = file_util.readFileByName(ctx, output_name, r['workspace_name'])
-        if output_file is None or 'data' not in output_file or output_file['data'] is None or output_file['data'][0] is None:
-          results.append(empty)
-          continue
-        fba_ref = ''
-        objective = ''
-        data = output_file['data'][0]
-        if 'path' in data and data['path'] is not None:
-          fba_ref = output_file['data'][0]['path'][0]
-        if 'data' in data and data['data'] is not None and 'objectiveValue' in data['data']:
-          objective = str(data['data']['objectiveValue'])
-        results.append({'fba_ref': fba_ref, 'objective': objective})
-      # get values from fba_tools app results
-      elif 'new_fba_ref' in r and 'objective' in r:
-        results.append({'fba_ref': r['new_fba_ref'], 'objective': r['objective']})
-      else:
-        results.append(empty)
     return results
   
-  def getFBAInformationFromExtractedResult(self, ctx, r, file_util):
+  # This is a helper method that returns FBA-related information (fba_ref and objective)
+  # from the results extracted from running a set of tasks via KBParallel.
+  def getFBAInformationFromExtractedResult(self, r, file_util):
     empty = {'fba_ref': '', 'objective': ''}
     if r is None or ('is_error' in r and r['is_error']):
       return empty
+    # COBRApy-based FBA: get fba_ref and objective by reading the report file by name
     if 'report_name' in r and r['report_name'].startswith('COBRApy') and 'obj' in r and 'workspace_name' in r:
       output_name = r['obj']
-      output_file = file_util.readFileByName(ctx, output_name, r['workspace_name'])
+      output_file = file_util.readFileByName(output_name, r['workspace_name'])
       if output_file is None or 'data' not in output_file or output_file['data'] is None or output_file['data'][0] is None:
         return empty
       fba_ref = ''
@@ -92,6 +74,7 @@ class AppExplorerUtil:
       if 'data' in data and data['data'] is not None and 'objectiveValue' in data['data']:
         objective = str(data['data']['objectiveValue'])
       return {'fba_ref': fba_ref, 'objective': objective}
+    # Legacy FBA: get fba_ref and objective from the given result object
     elif 'new_fba_ref' in r and 'objective' in r:
       return {'fba_ref': r['new_fba_ref'], 'objective': r['objective']}
     return empty

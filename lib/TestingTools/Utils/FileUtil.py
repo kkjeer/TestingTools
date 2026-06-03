@@ -33,12 +33,12 @@ class FileUtil:
   # This method reads a workspace file using its file name (rather than its ref).
   # This is a slower way to read a file (compared to using its ref), and should only be used if the ref is not available.
   # (See https://github.com/kbaseapps/SpeciesTreeBuilder/blob/dce166f6d1673018a001b750c191b9a2deda0c71/lib/src/workspace/ObjectSpecification.java).
-  def readFileByName(self, ctx, file_name, workspace_name):
+  def readFileByName(self, file_name, workspace_name):
     if file_name is None or file_name == '':
       logging.error('cannot read empty file name')
       return None
     try:
-      ws = Workspace(self.ws_url, token=ctx['token'])
+      ws = Workspace(self.ws_url, token=self.ctx['token'])
       obj = ws.get_objects2({'objects' : [{'name' : file_name, 'find_reference_path': 1, 'workspace': workspace_name}]})
       return obj
     except Exception as e:
