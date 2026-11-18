@@ -17,7 +17,7 @@ class AppExplorerUtil:
   # This method runs KBParallel on the given set of tasks, batching tasks into groups of up to 100
   # so as not to overwhelm KBParallel with too many tasks at once.
   def runKBParallel(self, tasks):
-    result = []
+    result = {}
     for i in range(0, len(tasks), 100):
       chunk = tasks[i:min(i+100, len(tasks))]
       t = self.parallelTasks(chunk)
