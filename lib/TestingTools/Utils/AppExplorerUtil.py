@@ -13,14 +13,34 @@ class AppExplorerUtil:
     self.shared_folder = config['scratch']
     logging.basicConfig(format='%(created)s %(levelname)s: %(message)s',
                         level=logging.INFO)
+
+  # This method runs KBParallel on the given set of tasks, batching tasks into groups of 100
+  # so as not to overwhelm KBParallel with too many tasks at once.
+  def runKBParallel(self, tasks):
+    result = []
+    for i in range(0, len(tasks), 100):
+      chunk = tasks[0:i]
+      t = self.parallelTasks(chunk)
+      if t is None:
+        continue
+      for key in t:
+        if key not in result:
+          result[key] = t[key]
+        else:
+          if isinstance(result[key], list):
+            result[key] = result[key] + t[key]
+          elif isinstance(result[key], dict):
+            result[key] = {**result[key], **t[key]}
+          else:
+            result[key] = t[key]
+    return result
   
   # This method runs KBParallel on the given set of tasks.
-  def runKBParallel(self, tasks):
+  def parallelTasks(self, tasks):
     logging.info(f'KBParallel: running {len(tasks)} tasks')
     if tasks is None:
       logging.warning('KBParallel: tasks are None')
       return None
-    # TODO: create a batch method that can run more than 100 tasks by breaking them up into multiple KBParallel calls
     if len(tasks) > 100:
       logging.warning(f'KBParallel: cannot run more than 100 tasks')
       return None
