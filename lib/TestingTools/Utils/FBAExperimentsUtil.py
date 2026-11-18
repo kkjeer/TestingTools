@@ -3,6 +3,8 @@ import os
 import requests # pyright: ignore[reportMissingModuleSource]
 import json
 
+EPSILON = 0.00001
+
 # This class contains utilities for the FBAExperiments app.
 class FBAExperimentsUtil:
   def __init__(self, config):
@@ -242,6 +244,8 @@ class FBAExperimentsUtil:
     try:
       a = float(x)
       b = float(y)
+      if abs(a - b) <= EPSILON:
+        return 'equal'
       if a < b:
         return 'increase'
       elif a > b:
