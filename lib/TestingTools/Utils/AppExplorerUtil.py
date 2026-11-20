@@ -96,7 +96,6 @@ class AppExplorerUtil:
       if 'path' in data and data['path'] is not None:
         fba_ref = output_file['data'][0]['path'][0]
       if 'data' in data and data['data'] is not None and 'objectiveValue' in data['data']:
-        logging.info(f'cobrapy result data: {data['data']}')
         objective = str(data['data']['objectiveValue'])
       return {'fba_ref': fba_ref, 'objective': objective}
     # Legacy FBA: get fba_ref and objective from the given result object
