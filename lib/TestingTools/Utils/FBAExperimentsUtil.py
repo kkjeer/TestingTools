@@ -41,7 +41,7 @@ class FBAExperimentsUtil:
         compounds_to_change = [{
           'change_id': compound_id, 
           'change_maxflux': flux, 
-          'change_minflux': -flux, 
+          'change_minflux': str(existing_compound['minFlux']), 
           'change_concentration': str(existing_compound['concentration'])
         }] if existing_compound is not None else []
         tasks.append({
