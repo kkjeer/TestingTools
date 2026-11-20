@@ -1,5 +1,6 @@
 import logging
 import os
+from pprint import pformat
 
 from installed_clients.KBParallelClient import KBParallel
 
@@ -89,13 +90,15 @@ class AppExplorerUtil:
       output_file = file_util.readFileByName(output_name, r['workspace_name'])
       if output_file is None or 'data' not in output_file or output_file['data'] is None or output_file['data'][0] is None:
         return empty
-      logging.info(f'read cobrapy result file: {output_file}')
+      # logging.info(f'read cobrapy result file: {pformat(output_file)}')
       fba_ref = ''
       objective = ''
       data = output_file['data'][0]
+      logging.info(f'cobrapy result data: {pformat(data)}')
       if 'path' in data and data['path'] is not None:
         fba_ref = output_file['data'][0]['path'][0]
       if 'data' in data and data['data'] is not None and 'objectiveValue' in data['data']:
+        logging.info(f'cobrapy data: {pformat(data["data"])}')
         objective = str(data['data']['objectiveValue'])
       return {'fba_ref': fba_ref, 'objective': objective}
     # Legacy FBA: get fba_ref and objective from the given result object
