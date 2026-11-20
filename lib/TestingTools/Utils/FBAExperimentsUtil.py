@@ -41,7 +41,7 @@ class FBAExperimentsUtil:
         compounds_to_change = [{
           'change_id': compound_id, 
           'change_maxflux': flux, 
-          'change_minflux': str(existing_compound['minFlux']), 
+          'change_minflux': -flux, 
           'change_concentration': str(existing_compound['concentration'])
         }] if existing_compound is not None else []
         tasks.append({
@@ -131,6 +131,7 @@ class FBAExperimentsUtil:
     for i in range(0, len(media_refs)):
       if media_refs[i] is None or media_refs[i] == '':
         continue
+      logging.info(f'creating media task {i} from media ref {media_refs[i]}')
       tasks.append({
         'module_name': 'fba_tools',
         'function_name': 'run_flux_balance_analysis',
