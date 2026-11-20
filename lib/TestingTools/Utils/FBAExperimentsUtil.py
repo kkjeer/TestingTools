@@ -131,7 +131,6 @@ class FBAExperimentsUtil:
     for i in range(0, len(media_refs)):
       if media_refs[i] is None or media_refs[i] == '':
         continue
-      logging.info(f'creating media task {i} from media ref {media_refs[i]}')
       tasks.append({
         'module_name': 'fba_tools',
         'function_name': 'run_flux_balance_analysis',
@@ -157,6 +156,7 @@ class FBAExperimentsUtil:
     for i in range(0, len(media_refs)):
       if media_refs[i] is None or media_refs[i] == '':
         continue
+      logging.info(f'creating cobrapy fba task {i} from media ref {media_refs[i]}')
       tasks.append({
         'module_name': 'COBRApyBasedFBA',
         'function_name': 'run_fba_pipeline',
